@@ -12,5 +12,6 @@ namespace NodeBlock.Engine
         public const string Variable = "variable";
         public const string Condition = "condition";
         public const string Connector = "connector";
+        public const string Deployer = "deployer";
     }
 }

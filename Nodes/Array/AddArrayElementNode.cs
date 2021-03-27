@@ -17,6 +17,7 @@ namespace NodeBlock.Engine.Nodes.Array
         }
 
         public List<object> Array { get; set; }
+        public int MaxArraySize = 10000;
 
         public override bool CanExecute => true;
         public override bool CanBeExecuted => true;
@@ -24,6 +25,11 @@ namespace NodeBlock.Engine.Nodes.Array
         public override bool OnExecution()
         {
             var array = this.InParameters["array"].GetValue() as List<object>;
+            if (array.Count >= MaxArraySize)
+            {
+                this.Graph.AppendLog("error", "Array size limit reached, limit: " + MaxArraySize);
+                return false;
+            }
             array.Add(this.InParameters["element"].GetValue());
             return true;
         }
