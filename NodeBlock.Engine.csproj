@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -27,7 +27,7 @@
   </ItemGroup>
   
    <ItemGroup>
-     <ProjectReference Include="..\NodeBlock.Engine.Encoding\NodeBlock.Engine.Encoding.csproj" />
+     <ProjectReference Include="..\GraphLinq.Encoding\NodeBlock.Engine.Encoding.csproj" />
    </ItemGroup>
   
    <ItemGroup>

@@ -142,6 +142,7 @@ namespace NodeBlock.Engine.API.Controllers
                     if (graph == null) { return; }
                     infos.Add(new
                     {
+                        hostedApi = graph?.graph.HasHostedAPI(),
                         hash = x.UniqueHash,
                         state = graph.currentGraphState,
                         loadedAt = graph.LoadedAt,
@@ -167,6 +168,23 @@ namespace NodeBlock.Engine.API.Controllers
                 return Ok(new
                 {
                     logs = logs
+                });
+            }
+            catch (Exception error)
+            {
+                logger.Error(error);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("healthcheck")]
+        public IActionResult HealthCheck([FromBody] Graph raw)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    alive = true
                 });
             }
             catch (Exception error)
