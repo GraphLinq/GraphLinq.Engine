@@ -27,10 +27,13 @@ namespace NodeBlock.Engine.Nodes.Array
             var array = this.InParameters["array"].GetValue() as List<object>;
             if (array.Count >= MaxArraySize)
             {
-                this.Graph.AppendLog("error", "Array size limit reached, limit: " + MaxArraySize);
-                return false;
+                array.RemoveAt(0);
+                array.Add(this.InParameters["element"].GetValue());
             }
-            array.Add(this.InParameters["element"].GetValue());
+            else
+            {
+                array.Add(this.InParameters["element"].GetValue());
+            }
             return true;
         }
     }
