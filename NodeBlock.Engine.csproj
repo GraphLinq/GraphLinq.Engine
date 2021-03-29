@@ -40,7 +40,7 @@
    </ItemGroup>
   
    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows'">
-     <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)\NodeBlock.CLI\bin\Debug\netcoreapp3.1&quot;" />
+     <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)\GraphLinq.CLI\bin\Debug\netcoreapp3.1&quot;" />
    </Target>
 
 </Project>
