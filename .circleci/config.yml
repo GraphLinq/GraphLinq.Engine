@@ -1,0 +1,35 @@
+version: 2.1
+jobs:
+  build:
+    environment:
+      BUILD_VERSION: 1.0.4
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:3.1
+    steps:
+      - checkout
+      - run:
+          name: Clone GraphLinq.Encoding
+          command: git clone https://github.com/GraphLinq/GraphLinq.Encoding.git ../GraphLinq.Encoding
+      - run:
+          name: Restore
+          command: dotnet restore
+      - run:
+          name: Build
+          command: dotnet build -c Release
+      - run:
+          name: Pack
+          command: dotnet pack --output nuget_build --configuration Release -p:Version=$BUILD_VERSION
+      - run:
+          name: Add Github registry
+          command: dotnet nuget add source -n graphlinq -u $GITHUB_USERNAME -p $GITHUB_TOKEN "https://nuget.pkg.github.com/GraphLinq/index.json" --store-password-in-clear-text
+      - run:
+          name: Publish nuget
+          command: dotnet nuget push "nuget_build/GraphLinq.Engine.$BUILD_VERSION.nupkg" --api-key $GITHUB_TOKEN --source "graphlinq"  --no-service-endpoint
+workflows:
+  version: 2
+  build-master:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master

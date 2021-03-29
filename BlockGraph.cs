@@ -426,7 +426,8 @@ namespace NodeBlock.Engine
 
         public bool HasHostedAPI()
         {
-            return this.Nodes.ToList().FindAll(x => x.Value.NodeType == typeof(Nodes.API.ExposeAPIBlockNode).Name).Count > 0;
+            return this.Nodes.ToList().FindAll(x => x.Value.NodeType == typeof(
+            ExposeAPIBlockNode).Name).Count > 0;
         }
 
         public ExposeAPIBlockNode GetHostedAPI()
