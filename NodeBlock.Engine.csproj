@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharp.Portable-Singleton" Version="2.0.0.4" />
     <PackageReference Include="DotNetEnv" Version="2.0.0" />
     <PackageReference Include="GraphQL" Version="3.3.2" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
@@ -13,7 +12,6 @@
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.22" />
     <PackageReference Include="MySqlConnector" Version="1.2.1" />
     <PackageReference Include="Nancy" Version="2.0.0" />
-    <PackageReference Include="Nancy.Hosting.Self" Version="2.0.0" />
     <PackageReference Include="Nancy.Serialization.JsonNet" Version="2.0.0-clinteastwood" />
     <PackageReference Include="Nethereum.ABI" Version="3.8.0" />
     <PackageReference Include="Nethereum.Contracts" Version="3.8.0" />
@@ -27,11 +25,11 @@
   </ItemGroup>
   
    <ItemGroup>
-     <ProjectReference Include="..\NodeBlock.Engine.Encoding\NodeBlock.Engine.Encoding.csproj" />
+     <Folder Include="Threading\" />
    </ItemGroup>
   
    <ItemGroup>
-     <Folder Include="Threading\" />
+     <ProjectReference Include="..\GraphLinq.Encoding\NodeBlock.Engine.Encoding.csproj" />
    </ItemGroup>
   
    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows'">
