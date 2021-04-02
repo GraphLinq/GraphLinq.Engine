@@ -122,7 +122,7 @@ namespace NodeBlock.Engine
             }
             catch(Exception ex)
             {
-                logger.Error(ex, "Error on node execution");
+                logger.Error(ex, "Error on node execution '" + this.FriendlyName + "'");
                 if (this.CurrentTraceItem != null)
                 {
                     this.CurrentTraceItem.ExecutionException = ex;

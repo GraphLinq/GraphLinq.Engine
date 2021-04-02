@@ -16,6 +16,9 @@ namespace NodeBlock.Engine.Nodes.Encoding.JSON
             this.InParameters.Add("jsonObject", new NodeParameter(this, "jsonObject", typeof(object), true));
             this.InParameters.Add("key", new NodeParameter(this, "key", typeof(string), true));
             this.InParameters.Add("value", new NodeParameter(this, "value", typeof(string), true));
+
+
+            this.OutParameters.Add("jsonObjectOut", new NodeParameter(this, "jsonObjectOut", typeof(object), true));
         }
 
         public override bool CanExecute => true;
@@ -28,6 +31,7 @@ namespace NodeBlock.Engine.Nodes.Encoding.JSON
             var key = this.InParameters["key"].GetValue().ToString();
             var value = this.InParameters["value"].GetValue();
             jsonObject.Add(new JProperty(key, value));
+            this.OutParameters["jsonObjectOut"].SetValue(jsonObject);
             return true;
         }
     }
