@@ -10,9 +10,11 @@ namespace NodeBlock.Engine.Nodes.Functions
         {
             Node = node;
             this.ReturnValues = new Dictionary<string, object>();
+            this.CallParameters = this.Node.CallParameters;
         }
 
         public FunctionNode Node { get; }
         public Dictionary<string, object> ReturnValues { get; set; }
+        public Dictionary<string, object> CallParameters { get; set; }
     }
 }

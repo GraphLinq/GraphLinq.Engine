@@ -15,6 +15,7 @@ namespace NodeBlock.Engine.Nodes.Functions
             this.InParameters.Add("name", new NodeParameter(this, "name", typeof(string), true));
         }
 
+        public Dictionary<string, object> CallParameters { get; set; }
         public FunctionContext Context { get; set; }
         public override bool CanExecute => true;
         public override bool CanBeExecuted => false;

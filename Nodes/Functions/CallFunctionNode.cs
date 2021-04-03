@@ -32,6 +32,7 @@ namespace NodeBlock.Engine.Nodes.Functions
                 this.Graph.AppendLog("error", "Function " + this.InParameters["name"].GetValue().ToString() + " doesnt exist in the graph");
                 return false;
             }
+            functionNode.CallParameters = this.InParameters["parameters"].GetValue() as Dictionary<string, object>;
             functionNode.Execute();
             this.OutParameters["results"].SetValue(functionNode.Context.ReturnValues);
             return true;
