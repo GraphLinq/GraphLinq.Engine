@@ -29,6 +29,7 @@ namespace NodeBlock.Engine.Nodes.Functions
             var value = this.InParameters["value"].GetValue();
 
             if(parameters.ContainsKey(name))
+
             {
                 parameters[name] = value;
             }
