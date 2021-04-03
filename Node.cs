@@ -5,6 +5,7 @@ using System.Text;
 using System.Linq;
 using NodeBlock.Engine.Debugging;
 using Nethereum.JsonRpc.Client.Streaming;
+using NodeBlock.Engine.Nodes.Functions;
 
 namespace NodeBlock.Engine
 {
@@ -99,7 +100,7 @@ namespace NodeBlock.Engine
                 traceItem = cycle.AddExecutedNode(this);
             }
 
-            if (this.NodeType != typeof(EntryPointNode).Name)
+            if (this.NodeType != typeof(EntryPointNode).Name && this.NodeType != typeof(FunctionNode).Name)
             {
                 if (!this.CanBeExecuted) return false;
             }

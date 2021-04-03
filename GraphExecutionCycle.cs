@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using NodeBlock.Engine.Attributes;
 using NodeBlock.Engine.Debugging;
+using NodeBlock.Engine.Nodes.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace NodeBlock.Engine
         public List<Node> ExecutedNodesInCycle;
         public Debugging.GraphTrace Trace;
         public Dictionary<string, NodeParameter> StartNodeInstanciatedParameters;
+        public FunctionContext CurrentFunctionContext { get; set; }
 
         public GraphExecutionCycle(BlockGraph graph, long timestamp, Node startNode, Dictionary<string, NodeParameter> parameters = null)
         {
