@@ -10,7 +10,7 @@ namespace NodeBlock.Engine.Nodes
     public class KeyValueNode : Node
     {
         public KeyValueNode(string id, BlockGraph graph)
-          : base(id, graph, typeof(StringNode).Name)
+          : base(id, graph, typeof(KeyValueNode).Name)
         {
 
             this.InParameters.Add("key", new NodeParameter(this, "key", typeof(object), true));
@@ -22,10 +22,13 @@ namespace NodeBlock.Engine.Nodes
         public override bool CanExecute => false;
         public override bool CanBeExecuted => false;
 
-        public override bool OnExecution()
+        public override object ComputeParameterValue(NodeParameter parameter, object value)
         {
-            this.OutParameters["output"].SetValue(new KeyValuePair<object,object>(this.InParameters["key"],this.InParameters["value"]));
-            return true;
+            if (parameter.Name == "output")
+            {
+                return new KeyValuePair<object, object>(this.InParameters["key"].GetValue().ToString(), this.InParameters["value"].GetValue().ToString());
+            }
+            return base.ComputeParameterValue(parameter, value);
         }
     }
 }
