@@ -36,10 +36,10 @@ namespace NodeBlock.Engine.Nodes.HTTP
             try
             {
                 var requestUrl = client.GetAsync((string)this.InParameters["url"].GetValue());
-                requestUrl.Wait();
+                requestUrl.Wait(1000);
 
                 var responseString = requestUrl.Result.Content.ReadAsStringAsync();
-                responseString.Wait();
+                responseString.Wait(1000);
                 this.OutParameters["content"].Value = responseString.Result;
             }
             catch(Exception ex)

@@ -19,12 +19,13 @@ namespace NodeBlock.Engine.Nodes.HTTP
             this.InParameters = new Dictionary<string, NodeParameter>()
             {
                 { "url", new NodeParameter(this, "url", typeof(string), true) },
-                {"data", new NodeParameter(this,"data",typeof(object),true,isDynamic:true) }
+                {"data", new NodeParameter(this,"data",typeof(Node),true) }
             };
 
             this.OutParameters = new Dictionary<string, NodeParameter>()
             {
-                { "content", new NodeParameter(this, "content", typeof(string), false, null, "", true) }
+                { "content", new NodeParameter(this, "content", typeof(object), false, null, "", true) },
+                { "exception", new NodeParameter(this, "exception", typeof(Node), false, null, "", true) }
             };
         }
 
@@ -33,6 +34,8 @@ namespace NodeBlock.Engine.Nodes.HTTP
 
         public override bool OnExecution()
         {
+
+            var a = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>());
 
             return true;
         }
