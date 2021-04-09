@@ -22,7 +22,9 @@ namespace NodeBlock.Engine.Nodes.HTTP
 
             this.OutParameters = new Dictionary<string, NodeParameter>()
             {
-                { "content", new NodeParameter(this, "content", typeof(string), false, null, "", true) }
+                { "content", new NodeParameter(this, "content", typeof(string), false, null, "", true) },
+                { "exception", new NodeParameter(this, "exception", typeof(Node), false, null, "", true) }
+
             };
         }
 
@@ -31,13 +33,25 @@ namespace NodeBlock.Engine.Nodes.HTTP
 
         public override bool OnExecution()
         {
-            var requestUrl = client.GetAsync((string)this.InParameters["url"].GetValue());
-            requestUrl.Wait();
+            try
+            {
+                var requestUrl = client.GetAsync((string)this.InParameters["url"].GetValue());
+                requestUrl.Wait();
 
-            var responseString = requestUrl.Result.Content.ReadAsStringAsync();
-            responseString.Wait();
-            this.OutParameters["content"].Value = responseString.Result;
+                var responseString = requestUrl.Result.Content.ReadAsStringAsync();
+                responseString.Wait();
+                this.OutParameters["content"].Value = responseString.Result;
+            }
+            catch(Exception ex)
+            {
+                if (this.OutParameters["exception"].Value != null)
+                {
+                    return (this.OutParameters["exception"].Value as Node).Execute();
+                }
+            }
+
             return true;
+
         }
     }
 }
