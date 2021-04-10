@@ -17,11 +17,12 @@ namespace NodeBlock.Engine.Nodes.HTTP.Headers
             this.InParameters = new Dictionary<string, NodeParameter>()
             {
                 { "array", new NodeParameter(this, "array", typeof(List<object>), true) },
+
             };
 
             this.OutParameters = new Dictionary<string, NodeParameter>()
             {
-                { "header", new NodeParameter(this, "header", typeof(HttpContent), false, null, "", true) },
+                { "httpContent", new NodeParameter(this, "httpContent", typeof(HttpContent), false, null, "", true) },
             };
         }
 
@@ -31,7 +32,9 @@ namespace NodeBlock.Engine.Nodes.HTTP.Headers
         public override bool OnExecution()
         {
             var values = ((List<object>)this.InParameters["array"].GetValue()).Select(x => new KeyValuePair<string, string>(((dynamic)x).Key, ((dynamic)x).Value)); ;
-            this.OutParameters["header"].SetValue(new FormUrlEncodedContent(values));
+            var httpcontent = new FormUrlEncodedContent(values);
+            
+            this.OutParameters["httpContent"].SetValue(httpcontent);
             return true;
         }
     }

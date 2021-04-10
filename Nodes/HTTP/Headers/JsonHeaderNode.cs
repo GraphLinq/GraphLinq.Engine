@@ -17,11 +17,12 @@ namespace NodeBlock.Engine.Nodes.HTTP.Headers
             this.InParameters = new Dictionary<string, NodeParameter>()
             {
                 { "json", new NodeParameter(this, "json", typeof(string), true) },
+
             };
 
             this.OutParameters = new Dictionary<string, NodeParameter>()
             {
-                { "header", new NodeParameter(this, "header", typeof(HttpContent), false, null, "", true) },
+                { "httpContent", new NodeParameter(this, "httpContent", typeof(HttpContent), false, null, "", true) },
             };
         }
 
@@ -30,7 +31,10 @@ namespace NodeBlock.Engine.Nodes.HTTP.Headers
 
         public override bool OnExecution()
         {
-            this.OutParameters["header"].SetValue(new System.Net.Http.StringContent(this.InParameters["json"].GetValue().ToString(), System.Text.Encoding.UTF8, "application/json"));       
+
+            var httpcontent = new System.Net.Http.StringContent(this.InParameters["json"].GetValue().ToString(), System.Text.Encoding.UTF8, "application/json");
+            
+            this.OutParameters["httpContent"].SetValue(httpcontent);       
             return true;
         }
     }

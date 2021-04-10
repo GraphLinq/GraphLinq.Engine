@@ -19,12 +19,14 @@ namespace NodeBlock.Engine.Nodes.HTTP
             this.InParameters = new Dictionary<string, NodeParameter>()
             {
                 { "url", new NodeParameter(this, "url", typeof(string), true) },
-                {"header", new NodeParameter(this,"header",typeof(HttpContent),true) }
+                {"httpContent", new NodeParameter(this,"httpContent",typeof(HttpContent),true) },
+                { "headers", new NodeParameter(this, "headers", typeof(List<object>), true) },
+
             };
 
             this.OutParameters = new Dictionary<string, NodeParameter>()
             {
-                { "content", new NodeParameter(this, "content", typeof(object), false, null, "", true) },
+                { "result", new NodeParameter(this, "result", typeof(string), false, null, "", true) },
                 { "exception", new NodeParameter(this, "exception", typeof(Node), false, null, "", true) }
             };
         }
@@ -37,13 +39,21 @@ namespace NodeBlock.Engine.Nodes.HTTP
 
             try
             {
-                var packet = (HttpContent)this.InParameters["header"].GetValue();
+                if (this.InParameters["headers"].GetValue() != null)
+                {
+                    foreach (var header in (List<object>)this.InParameters["headers"].GetValue())
+                    {
+                        client.DefaultRequestHeaders.Add(((dynamic)header).Key, ((dynamic)header).Value);
+                    }
+                }
+
+                var packet = (HttpContent)this.InParameters["httpContent"].GetValue();
                 var requestUrl = client.PutAsync((string)this.InParameters["url"].GetValue(), packet);
                 requestUrl.Wait(1000);
 
                 var responseString = requestUrl.Result.Content.ReadAsStringAsync();
                 responseString.Wait(1000);
-                this.OutParameters["content"].Value = responseString.Result;
+                this.OutParameters["result"].Value = responseString.Result;
             }
             catch (Exception ex)
             {
