@@ -6,8 +6,8 @@ using System.Text;
 
 namespace NodeBlock.Engine.Nodes.HTTP.Headers
 {
-    [NodeDefinition("JsonHeaderNode", "Json Header Node", NodeTypeEnum.Function, "HTTP")]
-    [NodeGraphDescription("Convert the json data into a header for a http request.")]
+    [NodeDefinition("JsonHeaderNode", "Array To JSON Body", NodeTypeEnum.Function, "HTTP")]
+    [NodeGraphDescription("Convert the json data into a json for a http request.")]
     public class JsonHeaderNode : Node
     {
 

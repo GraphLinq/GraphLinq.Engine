@@ -6,8 +6,8 @@ using System.Text;
 using System.Linq;
 namespace NodeBlock.Engine.Nodes.HTTP.Headers
 {
-    [NodeDefinition("UrlEncodeHeaderNode", "Url Encode Header Node", NodeTypeEnum.Function, "HTTP")]
-    [NodeGraphDescription("Convert the array key-value data into a header for a http request.")]
+    [NodeDefinition("UrlEncodeHeaderNode", "Array To Body Values", NodeTypeEnum.Function, "HTTP")]
+    [NodeGraphDescription("Convert the array key-value data into a body values for a http request.")]
     public class UrlEncodeHeaderNode : Node
     {
 
