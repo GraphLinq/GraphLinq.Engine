@@ -11,8 +11,6 @@ namespace NodeBlock.Engine.Nodes.HTTP
     [NodeGraphDescription("Make an HTTP Put request to any requested server")]
     public class PutHTTPNode : Node
     {
-        private HttpClient client = new HttpClient();
-
         public PutHTTPNode(string id, BlockGraph graph)
             : base(id, graph, typeof(PutHTTPNode).Name)
         {
@@ -39,21 +37,24 @@ namespace NodeBlock.Engine.Nodes.HTTP
 
             try
             {
-                if (this.InParameters["headers"].GetValue() != null)
+                using(HttpClient client = new HttpClient())
                 {
-                    foreach (var header in (List<object>)this.InParameters["headers"].GetValue())
+                    if (this.InParameters["headers"].GetValue() != null)
                     {
-                        client.DefaultRequestHeaders.Add(((dynamic)header).Key, ((dynamic)header).Value);
+                        foreach (var header in (List<object>)this.InParameters["headers"].GetValue())
+                        {
+                            client.DefaultRequestHeaders.Add(((dynamic)header).Key, ((dynamic)header).Value);
+                        }
                     }
-                }
 
-                var packet = (HttpContent)this.InParameters["httpContent"].GetValue();
-                var requestUrl = client.PutAsync((string)this.InParameters["url"].GetValue(), packet);
-                requestUrl.Wait(1000);
+                    var packet = (HttpContent)this.InParameters["httpContent"].GetValue();
+                    var requestUrl = client.PutAsync((string)this.InParameters["url"].GetValue(), packet);
+                    requestUrl.Wait(1000);
 
-                var responseString = requestUrl.Result.Content.ReadAsStringAsync();
-                responseString.Wait(1000);
-                this.OutParameters["result"].Value = responseString.Result;
+                    var responseString = requestUrl.Result.Content.ReadAsStringAsync();
+                    responseString.Wait(1000);
+                    this.OutParameters["result"].Value = responseString.Result;
+                }         
             }
             catch (Exception ex)
             {
