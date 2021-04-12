@@ -89,7 +89,7 @@ namespace NodeBlock.Engine
                         });
                         try
                         {
-                            Task timeoutTask = Task.Delay(1000 * 60);
+                            Task timeoutTask = Task.Delay((1000 * 60) * 5);
                             cycleTask.Start();
                             var taskResult = await Task.WhenAny(cycleTask, timeoutTask);
                             if (timeoutTask == taskResult)
@@ -411,7 +411,7 @@ namespace NodeBlock.Engine
 
         public void AppendLog(string type, string message)
         {
-            logger.Debug("[{0}] {1}", type, message);
+            //logger.Debug("[{0}] {1}", type, message);
             if (CheckLogRotate())
             {
                 var currentLogs = Storage.Redis.RedisStorage.GetLogsForGraph(this.UniqueHash);

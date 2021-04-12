@@ -33,7 +33,8 @@ namespace NodeBlock.Engine.Nodes.Storage
         {
             if (parameter.Name == "value")
             {
-                return RedisStorage.GetGraphKeyItem(this.Graph, this.InParameters["key"].GetValue().ToString());
+                var v = RedisStorage.GetGraphKeyItem(this.Graph, this.InParameters["key"].GetValue().ToString());
+                return v;
             }
 
             return base.ComputeParameterValue(parameter, value);

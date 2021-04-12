@@ -37,6 +37,8 @@ namespace NodeBlock.Engine.Nodes
             timer.Elapsed += Timer_Elapsed;
             timer.Enabled = true;
             timer.Start();
+
+            this.Graph.AddCycle(this);
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
