@@ -215,7 +215,9 @@ namespace NodeBlock.Engine
                 if (!graph.Nodes.ContainsKey(nodeSchema.Id)) continue;
                 var node = graph.Nodes[nodeSchema.Id];
                 if (nodeSchema.OutNode != null)
-                    node.OutNode = graph.Nodes[nodeSchema.OutNode];
+                {
+                    if(graph.Nodes.ContainsKey(nodeSchema.OutNode)) node.OutNode = graph.Nodes[nodeSchema.OutNode];
+                }
                 foreach (var parameter in nodeSchema.InParameters)
                 {
                     var nodeParam = node.InParameters[parameter.Name];
