@@ -89,7 +89,7 @@ namespace NodeBlock.Engine
                         });
                         try
                         {
-                            Task timeoutTask = Task.Delay((1000 * 60) * 5);
+                            Task timeoutTask = Task.Delay(1000 * 60);
                             cycleTask.Start();
                             var taskResult = await Task.WhenAny(cycleTask, timeoutTask);
                             if (timeoutTask == taskResult)
@@ -215,7 +215,9 @@ namespace NodeBlock.Engine
                 if (!graph.Nodes.ContainsKey(nodeSchema.Id)) continue;
                 var node = graph.Nodes[nodeSchema.Id];
                 if (nodeSchema.OutNode != null)
-                    node.OutNode = graph.Nodes[nodeSchema.OutNode];
+                {
+                    if(graph.Nodes.ContainsKey(nodeSchema.OutNode)) node.OutNode = graph.Nodes[nodeSchema.OutNode];
+                }
                 foreach (var parameter in nodeSchema.InParameters)
                 {
                     var nodeParam = node.InParameters[parameter.Name];
@@ -409,7 +411,7 @@ namespace NodeBlock.Engine
 
         public void AppendLog(string type, string message)
         {
-            //logger.Debug("[{0}] {1}", type, message);
+            logger.Debug("[{0}] {1}", type, message);
             if (CheckLogRotate())
             {
                 var currentLogs = Storage.Redis.RedisStorage.GetLogsForGraph(this.UniqueHash);
