@@ -153,6 +153,9 @@ namespace NodeBlock.Engine
                             if (cost > 0)
                             {
                                 decimal decimalAmount = cost / decimal.Parse(Environment.GetEnvironmentVariable("factor_decimal"));
+                                string precision = decimalAmount.ToString("N8");
+                                decimalAmount = decimal.Parse(precision);
+
                                 using (var scope = services.CreateScope())
                                 {
                                     var context = scope.ServiceProvider.GetService<MariaDBStorage>();
