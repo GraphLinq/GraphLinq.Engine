@@ -230,7 +230,10 @@ namespace NodeBlock.Engine
                     nodeParam.Id = parameter.Id;
                     if(parameter.ValueIsReference && parameter.Value != null && parameter.Value.ToString() != "")
                     {
-                        nodeParam.Value = graph.Nodes[(string)parameter.Value];
+                        if(graph.Nodes.ContainsKey((string)parameter.Value))
+                        {
+                            nodeParam.Value = graph.Nodes[(string)parameter.Value];
+                        }
                     }
                     else
                     {
