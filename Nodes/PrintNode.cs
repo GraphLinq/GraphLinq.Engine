@@ -23,6 +23,7 @@ namespace NodeBlock.Engine.Nodes
 
         public override bool OnExecution()
         {
+            if (this.InParameters["message"].GetValue().ToString().Trim() == string.Empty) return false;
             this.Graph.AppendLog("info", this.InParameters["message"].GetValue().ToString());
             return true;
         }

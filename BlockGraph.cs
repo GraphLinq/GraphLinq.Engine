@@ -74,37 +74,47 @@ namespace NodeBlock.Engine
                 {
                     if (this.PendingCycles.Count <= 0)
                     {
-                        await Task.Delay(50);
+                        await Task.Delay(150);
                     }
                     GraphExecutionCycle pendingCycle = null;
                     if (this.cancelCycleToken.IsCancellationRequested) return;
                     while (this.PendingCycles.TryDequeue(out pendingCycle))
                     {
-                        if (!this.IsRunning) return;
-                        currentCycle = pendingCycle;
-                        if (this.cancelCycleToken.IsCancellationRequested) return;
-                        Task cycleTask = new Task(() =>
-                        {
-                            pendingCycle.Execute();
-                        });
                         try
                         {
-                            Task timeoutTask = Task.Delay(1000 * 60);
-                            cycleTask.Start();
-                            var taskResult = await Task.WhenAny(cycleTask, timeoutTask);
-                            if (timeoutTask == taskResult)
+
+                            if (!this.IsRunning) return;
+                            currentCycle = pendingCycle;
+                            if (this.cancelCycleToken.IsCancellationRequested) return;
+                            Task cycleTask = new Task(() =>
                             {
-                                this.AppendLog("error", string.Format("Timeout occured on last cycle from graph hash: {0}", this.UniqueHash));
-                                logger.Error("Timeout exceeded for the cycle, skipping ..");
-                                cycleTask.Dispose();
+                                pendingCycle.Execute();
+                            });
+                            try
+                            {
+                                Task timeoutTask = Task.Delay(1000 * 60);
+                                cycleTask.Start();
+                                var taskResult = await Task.WhenAny(cycleTask, timeoutTask);
+                                if (timeoutTask == taskResult)
+                                {
+                                    this.AppendLog("error", string.Format("Timeout occured on last cycle from graph hash: {0}", this.UniqueHash));
+                                    logger.Error("Timeout exceeded for the cycle, skipping ..");
+                                    cycleTask.Dispose();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Error(ex, "Error when executing the cycle");
                             }
                         }
-                        catch(Exception ex)
+                        catch (Exception ex2)
                         {
-                            logger.Error(ex, "Error when executing the cycle");
+                            logger.Error(ex2, "Error when executing the cycle");
                         }
-                        
-                        currentCycle = null;
+                        finally
+                        {
+                            currentCycle = null;
+                        }
                     }
                 }
                 return;
@@ -414,7 +424,10 @@ namespace NodeBlock.Engine
 
         public void AppendLog(string type, string message)
         {
-            logger.Debug("[{0}] {1}", type, message);
+            if(Environment.GetEnvironmentVariable("graph_env") == "dev")
+            {
+                logger.Debug("[{0}] {1}", type, message);
+            }
             if (CheckLogRotate())
             {
                 var currentLogs = Storage.Redis.RedisStorage.GetLogsForGraph(this.UniqueHash);
