@@ -102,6 +102,10 @@ namespace NodeBlock.Engine
 
             if (this.NodeType != typeof(EntryPointNode).Name && this.NodeType != typeof(FunctionNode).Name)
             {
+                if(this.GetType().Namespace.Contains("Ethereum"))
+                {
+                    Console.WriteLine("Blockchain block called : " + this.NodeType);
+                }
                 if (!this.CanBeExecuted) return false;
             }
 
