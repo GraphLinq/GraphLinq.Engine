@@ -33,8 +33,8 @@ namespace NodeBlock.Engine
 
         public Dictionary<string, object> MemoryVariables = new Dictionary<string, object>();
 
-        private Task queueTask;
-        public ConcurrentQueue<GraphExecutionCycle> PendingCycles = new ConcurrentQueue<GraphExecutionCycle>();
+        private Dictionary<string, Task> queueTaskCycleThreads = new Dictionary<string, Task>();
+        private Dictionary<string, ConcurrentQueue<GraphExecutionCycle>> pendingCyclesQueues = new Dictionary<string, ConcurrentQueue<GraphExecutionCycle>>();
         public GraphExecutionCycle currentCycle;
 
         private CancellationTokenSource cancelCycleToken;
@@ -62,23 +62,32 @@ namespace NodeBlock.Engine
                 // Insert the given entry point
                 this.AddNode(entryPoint);
             }
-            this.runQueueTask();
         }
 
-        private void runQueueTask()
+        public void AddCycleToQueue(string queue, GraphExecutionCycle executionCycle)
+        {
+            if(!this.pendingCyclesQueues.ContainsKey(queue))
+            {
+                this.pendingCyclesQueues.Add(queue, new ConcurrentQueue<GraphExecutionCycle>());
+                this.runQueueTask(queue);
+            }
+            this.pendingCyclesQueues[queue].Enqueue(executionCycle);
+        }
+
+        private void runQueueTask(string queueName)
         {
             this.cancelCycleToken = new CancellationTokenSource();
-            queueTask = new Task(async () =>
+            var task = new Task(async () =>
             {
                 while(!this.cancelCycleToken.IsCancellationRequested)
                 {
-                    if (this.PendingCycles.Count <= 0)
+                    if (this.pendingCyclesQueues[queueName].Count <= 0)
                     {
                         await Task.Delay(150);
                     }
                     GraphExecutionCycle pendingCycle = null;
                     if (this.cancelCycleToken.IsCancellationRequested) return;
-                    while (this.PendingCycles.TryDequeue(out pendingCycle))
+                    while (this.pendingCyclesQueues[queueName].TryDequeue(out pendingCycle))
                     {
                         try
                         {
@@ -119,7 +128,8 @@ namespace NodeBlock.Engine
                 }
                 return;
             });
-            queueTask.Start();
+            queueTaskCycleThreads.Add(queueName, task);
+            task.Start();
         }
 
         public bool Stop(bool force = false)
@@ -150,7 +160,7 @@ namespace NodeBlock.Engine
 
             try
             {
-                this.queueTask.Dispose();
+                this.queueTaskCycleThreads.ToList().ForEach(x => x.Value.Dispose());
                 this.cancelCycleToken.Cancel();
             }
             catch(Exception ex)
@@ -391,11 +401,11 @@ namespace NodeBlock.Engine
             return total;
         }
 
-        public void AddCycle(Node startNode, Dictionary<string, NodeParameter> parameters = null)
+        public void AddCycle(Node startNode, Dictionary<string, NodeParameter> parameters = null, string cycleQueueInstance = "main")
         {
             if (startNode.LastCycleAt + startNode.NodeCycleLimit > DateTimeOffset.Now.ToUnixTimeMilliseconds()) return;
             startNode.LastCycleAt = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            this.PendingCycles.Enqueue(new GraphExecutionCycle(this, DateTimeOffset.Now.ToUnixTimeSeconds(), startNode, parameters));
+            this.AddCycleToQueue(cycleQueueInstance, new GraphExecutionCycle(this, DateTimeOffset.Now.ToUnixTimeSeconds(), startNode, parameters));
         }
 
         public GraphExecutionCycle GetCurrentCycle()

@@ -29,8 +29,8 @@ namespace NodeBlock.Engine.Nodes.Branch
 
         public override bool OnExecution()
         {
-            var interval = int.Parse(this.InParameters["intervalInSeconds"].GetValue().ToString()) * 1000;
-            if (interval < 1000) interval = 1000;
+            var interval = int.Parse(this.InParameters["intervalInSeconds"].GetValue().ToString());
+            if (interval < 1) interval = 1;
             if (willTickAt == 0)
             {
                 willTickAt = DateTimeOffset.Now.ToUnixTimeSeconds() + interval;

@@ -34,7 +34,7 @@ namespace NodeBlock.Engine.Nodes.API
         {
             var parameters = this.InstanciateParametersForCycle();
             parameters["requestContext"].SetValue(requestContext);
-            this.Graph.AddCycle(this, parameters);
+            this.Graph.AddCycle(this, parameters, "api");
         }
 
         public override void BeginCycle()
