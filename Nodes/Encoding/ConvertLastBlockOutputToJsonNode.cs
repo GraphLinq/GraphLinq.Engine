@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace NodeBlock.Engine.Nodes.Encoding
 {
@@ -31,11 +32,12 @@ namespace NodeBlock.Engine.Nodes.Encoding
         {
             if(this.LastExecutionFrom.CanBeSerialized)
             {
-                this.OutParameters["json"].Value = JsonConvert.SerializeObject(this.LastExecutionFrom.OutParameters.Values.ToList().Select(x => new
+                var jo = new JObject();
+                this.LastExecutionFrom.OutParameters.Values.ToList().ForEach(x =>
                 {
-                    key = x.Name,
-                    value = x.GetValue()
-                }));
+                    jo.Add(new JProperty(x.Name, x.GetValue()));
+                });
+                this.OutParameters["json"].Value = jo.ToString();
             }
             else
             {
