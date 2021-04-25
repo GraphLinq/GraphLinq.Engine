@@ -58,6 +58,13 @@ namespace NodeBlock.Engine.Storage.Redis
             conn.StringSet(isolatedKey, value);
         }
 
+        public static void SetWalletGraphKeyItem(BlockGraph graph, string key, string value)
+        {
+            var conn = muxer.GetDatabase(GetGraphDatabaseId());
+            var isolatedKey = graph.currentContext.walletIdentifier + "/" + key;
+            conn.StringSet(isolatedKey, value);
+        }
+
         public static string GetGraphKeyItem(BlockGraph graph, string key)
         {
             var conn = muxer.GetDatabase(GetGraphDatabaseId());
@@ -65,10 +72,24 @@ namespace NodeBlock.Engine.Storage.Redis
             return conn.StringGet(isolatedKey);
         }
 
+        public static string GetWalletGraphKeyItem(BlockGraph graph, string key)
+        {
+            var conn = muxer.GetDatabase(GetGraphDatabaseId());
+            var isolatedKey = graph.currentContext.walletIdentifier + "/" + key;
+            return conn.StringGet(isolatedKey);
+        }
+
         public static bool GraphKeyItemExist(BlockGraph graph, string key)
         {
             var conn = muxer.GetDatabase(GetGraphDatabaseId());
             var isolatedKey = graph.GetId() + "/" + key;
+            return conn.KeyExists(isolatedKey);
+        }
+
+        public static bool GraphWalletKeyItemExist(BlockGraph graph, string key)
+        {
+            var conn = muxer.GetDatabase(GetGraphDatabaseId());
+            var isolatedKey = graph.currentContext.walletIdentifier + "/" + key;
             return conn.KeyExists(isolatedKey);
         }
 
