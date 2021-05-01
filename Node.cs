@@ -34,6 +34,7 @@ namespace NodeBlock.Engine
         public long LastCycleAt;
         public TraceItem CurrentTraceItem = null;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        public long CustomTimeout = 0;
 
         public Node(string id, BlockGraph graph, string nodeType)
         {
@@ -64,6 +65,15 @@ namespace NodeBlock.Engine
                 if (nodeDescription != null)
                 {
                     this.NodeDescription = nodeDescription.Description;
+                }
+            }
+
+            if (this.GetType().GetCustomAttributes(typeof(Attributes.NodeTimeout), true).Length > 0)
+            {
+                var nodeTimeout = (this.GetType().GetCustomAttributes(typeof(Attributes.NodeTimeout), true)[0] as Attributes.NodeTimeout);
+                if (nodeTimeout != null)
+                {
+                    this.CustomTimeout = nodeTimeout.CustomTimeout;
                 }
             }
 

@@ -56,6 +56,17 @@ namespace NodeBlock.Engine
             return total;
         }
 
+        public int GetCycleMaxExecutionTime()
+        {
+            var baseTime = 1000 * 60;
+            var maxTimeout = 0;
+            foreach(var nodeWithTimeout in this.Graph.Nodes.Where(x => x.Value.CustomTimeout > 0))
+            {
+                if (nodeWithTimeout.Value.CustomTimeout > maxTimeout) maxTimeout = (int)nodeWithTimeout.Value.CustomTimeout;
+            }
+            return baseTime + maxTimeout;
+        }
+
         public TraceItem AddExecutedNode(Node node)
         {
             this.ExecutedNodesInCycle.Add(node);

@@ -101,7 +101,7 @@ namespace NodeBlock.Engine
                             });
                             try
                             {
-                                Task timeoutTask = Task.Delay(1000 * 60);
+                                Task timeoutTask = Task.Delay(pendingCycle.GetCycleMaxExecutionTime());
                                 cycleTask.Start();
                                 var taskResult = await Task.WhenAny(cycleTask, timeoutTask);
                                 if (timeoutTask == taskResult)
