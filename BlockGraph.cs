@@ -246,6 +246,8 @@ namespace NodeBlock.Engine
                 }
                 foreach (var parameter in nodeSchema.OutParameters)
                 {
+                    if (!node.OutParameters.ContainsKey(parameter.Name))
+                        continue;
                     var nodeParam = node.OutParameters[parameter.Name];
                     nodeParam.Id = parameter.Id;
                     if(parameter.ValueIsReference && parameter.Value != null && parameter.Value.ToString() != "")
