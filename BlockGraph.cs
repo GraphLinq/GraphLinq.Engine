@@ -279,7 +279,7 @@ namespace NodeBlock.Engine
 
                 foreach (var parameter in nodeSchema.OutParameters)
                 {
-                    if (!graph.Nodes.ContainsKey(nodeSchema.Id)) continue;
+                    if (!node.OutParameters.ContainsKey(parameter.Name)) continue;
                     var nodeParam = node.OutParameters[parameter.Name];
                     if (parameter.Assignment != string.Empty)
                     {
