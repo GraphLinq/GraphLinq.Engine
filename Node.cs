@@ -6,6 +6,7 @@ using System.Linq;
 using NodeBlock.Engine.Debugging;
 using Nethereum.JsonRpc.Client.Streaming;
 using NodeBlock.Engine.Nodes.Functions;
+using NodeBlock.Engine.Attributes;
 
 namespace NodeBlock.Engine
 {
@@ -35,6 +36,7 @@ namespace NodeBlock.Engine
         public TraceItem CurrentTraceItem = null;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public long CustomTimeout = 0;
+        public List<NodeSpecialActionAttribute> SpecialActionsAttributes = new List<NodeSpecialActionAttribute>();
 
         public Node(string id, BlockGraph graph, string nodeType)
         {
@@ -77,6 +79,7 @@ namespace NodeBlock.Engine
                 }
             }
 
+            this.SpecialActionsAttributes = this.GetType().GetCustomAttributes(typeof(Attributes.NodeSpecialActionAttribute), true).Select(x => x as Attributes.NodeSpecialActionAttribute).ToList();
 
             this.InParameters = new Dictionary<string, NodeParameter>();
             this.OutParameters = new Dictionary<string, NodeParameter>();
