@@ -376,7 +376,7 @@ namespace NodeBlock.Engine
             }
 
             IsRunning = true;
-            foreach (var x in this.Nodes.ToList().FindAll(x => x.Value.IsEventNode))
+            foreach (var x in this.Nodes.ToList().FindAll(x => x.Value.IsEventNode).OrderByDescending(x => x.Value.GetType() == typeof(OnGraphStartNode)))
             {
                 try
                 {
