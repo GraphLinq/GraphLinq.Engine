@@ -14,6 +14,7 @@ namespace NodeBlock.Engine.Nodes.Array
         {
             this.InParameters.Add("array", new NodeParameter(this, "array", typeof(List<object>), true));
             this.InParameters.Add("element", new NodeParameter(this, "element", typeof(object), true));
+            this.InParameters.Add("sizeLimit", new NodeParameter(this, "sizeLimit", typeof(int), true));
         }
 
         public List<object> Array { get; set; }
@@ -32,6 +33,14 @@ namespace NodeBlock.Engine.Nodes.Array
             }
             else
             {
+                if (this.InParameters["sizeLimit"].GetValue() != null)
+                {
+                    var sizeLimit = int.Parse(this.InParameters["sizeLimit"].GetValue().ToString());
+                    if(array.Count > sizeLimit)
+                    {
+                        array.RemoveAt(0);
+                    }
+                }
                 array.Add(this.InParameters["element"].GetValue());
             }
             return true;

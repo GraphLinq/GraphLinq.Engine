@@ -15,6 +15,11 @@ namespace NodeBlock.Engine.Storage.Redis
     {
         private static ConnectionMultiplexer muxer;
 
+        public static ConnectionMultiplexer GetMuxer()
+        {
+            return muxer;
+        }
+
         static RedisStorage()
         {
             muxer = ConnectionMultiplexer.Connect(Environment.GetEnvironmentVariable("redis_master_addr") + ":" + Environment.GetEnvironmentVariable("redis_master_port") + ",password=" +

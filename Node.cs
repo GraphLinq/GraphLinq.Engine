@@ -37,6 +37,7 @@ namespace NodeBlock.Engine
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public long CustomTimeout = 0;
         public List<NodeSpecialActionAttribute> SpecialActionsAttributes = new List<NodeSpecialActionAttribute>();
+        public NodeIDEParametersAttribute IDEParameters { get; set; }
 
         public Node(string id, BlockGraph graph, string nodeType)
         {
@@ -76,6 +77,15 @@ namespace NodeBlock.Engine
                 if (nodeTimeout != null)
                 {
                     this.CustomTimeout = nodeTimeout.CustomTimeout;
+                }
+            }
+
+            if (this.GetType().GetCustomAttributes(typeof(Attributes.NodeIDEParametersAttribute), true).Length > 0)
+            {
+                var nodeIdeParameters = (this.GetType().GetCustomAttributes(typeof(Attributes.NodeIDEParametersAttribute), true)[0] as Attributes.NodeIDEParametersAttribute);
+                if (nodeIdeParameters != null)
+                {
+                    this.IDEParameters = nodeIdeParameters;
                 }
             }
 
