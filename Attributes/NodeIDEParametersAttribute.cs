@@ -8,5 +8,7 @@ namespace NodeBlock.Engine.Attributes
     {
         public bool Hidden = false;
         public bool IsSecretInput = false;
+        public bool IsScriptInput = false;
+        public string ScriptType = "lua";
     }
 }

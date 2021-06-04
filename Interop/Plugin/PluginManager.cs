@@ -31,14 +31,17 @@ namespace NodeBlock.Engine.Interop.Plugin
                     var plugin = Activator.CreateInstance(basePluginType) as BasePlugin;
                     plugin.Load();
 
+                    var nodeCount = 0;
                     foreach (var type in assembly.GetTypes())
                     {
                         if (type.GetCustomAttributes(typeof(Attributes.NodeDefinition), true).Length == 0) continue;
                         var instance = Activator.CreateInstance(type, string.Empty, null) as Node;
                         NodeBlockExporter.AddNodeType(instance);
+                        nodeCount++;
                     }
 
                     _plugins.Add(plugin);
+                    logger.Info("Plugin " + plugin.GetType().FullName + " loaded with " + nodeCount + " nodes");
                 }
                 catch(Exception ex)
                 {
