@@ -7,5 +7,6 @@ namespace NodeBlock.Engine.Attributes
     public class NodeIDEParametersAttribute : Attribute
     {
         public bool Hidden = false;
+        public bool IsSecretInput = false;
     }
 }

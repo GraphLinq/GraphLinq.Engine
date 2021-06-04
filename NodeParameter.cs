@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace NodeBlock.Engine
@@ -64,6 +65,28 @@ namespace NodeBlock.Engine
             catch(Exception ex)
             {
                 return null;
+            }
+        }
+
+        public double GetValueAsDouble()
+        {
+            if(this.GetValue().GetType() != typeof(double) &&
+                this.GetValue().GetType() != typeof(int)
+                && this.GetValue().GetType() != typeof(long)
+                && this.GetValue().GetType() != typeof(float)) {
+
+                return double.Parse(this.GetValue().ToString(), CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                if(this.GetValue().GetType() != typeof(double))
+                {
+                    return Convert.ToDouble(this.GetValue());
+                }
+                else
+                {
+                    return (double)this.GetValue();
+                }
             }
         }
 

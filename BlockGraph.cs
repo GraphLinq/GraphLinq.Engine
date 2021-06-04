@@ -43,6 +43,13 @@ namespace NodeBlock.Engine
 
         public DateTime? RotateLastUpdate;
 
+        // Events
+        public static event EventHandler<BlockGraph> OnNewGraphLoaded;
+
+        public event EventHandler OnGraphStarted;
+        public event EventHandler OnGraphStopped;
+        public event EventHandler OnNewCycle;
+
         public BlockGraph(string name = "", Node entryPoint = null, bool createEntryPoint = true)
         {
             GraphManager.InitGraphEngine();
@@ -62,6 +69,7 @@ namespace NodeBlock.Engine
                 // Insert the given entry point
                 this.AddNode(entryPoint);
             }
+            if (OnNewGraphLoaded != null) OnNewGraphLoaded(this, this);
         }
 
         public void AddCycleToQueue(string queue, GraphExecutionCycle executionCycle)
