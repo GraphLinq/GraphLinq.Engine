@@ -12,7 +12,7 @@ namespace NodeBlock.Engine.Interop.Plugin
     {
         private static bool _pluginLoaded = false;
         private static List<BasePlugin> _plugins = new List<BasePlugin>();
-        private static List<ExportableObject> _exportableObjects = new List<ExportableObject>();
+        private static Dictionary<string, MethodInfo> _exportableObjects = new Dictionary<string, MethodInfo>();
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         
@@ -42,6 +42,13 @@ namespace NodeBlock.Engine.Interop.Plugin
                     var nodeCount = 0;
                     foreach (var type in assembly.GetTypes())
                     {
+                        foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public))
+                        {
+                            if (method.GetCustomAttributes(typeof(Attributes.ExportableObject), true).Length == 0) continue;
+                            var eo = method.GetCustomAttributes(typeof(Attributes.ExportableObject), true).FirstOrDefault() as ExportableObject;
+                            _exportableObjects.Add(eo.Name, method);
+                        }
+
                         if (type.GetCustomAttributes(typeof(Attributes.NodeDefinition), true).Length == 0) continue;
                         var instance = Activator.CreateInstance(type, string.Empty, null) as Node;
                         NodeBlockExporter.AddNodeType(instance);
@@ -58,6 +65,11 @@ namespace NodeBlock.Engine.Interop.Plugin
             }
 
             _pluginLoaded = true;
+        }
+
+        public static MethodInfo GetExportedMethod(string name)
+        {
+            return _exportableObjects[name];
         }
     }
 }
