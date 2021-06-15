@@ -13,6 +13,7 @@ namespace NodeBlock.Engine.Interop.Plugin
             public string Name { get; set; }
             public string PublicKey { get; set; }
             public string PrivateKey { get; set; }
+            public string PrivateKeyUnencrypted { get; set; }
             public string Password { get; set; }
             public DateTime? CreatedAt { get; set; }
             public DateTime? UpdatedAt { get; set; }
@@ -32,6 +33,7 @@ namespace NodeBlock.Engine.Interop.Plugin
                 Name = (string)entityType.GetProperty("Name").GetGetMethod().Invoke(entity, new object[] { }),
                 PublicKey = (string)entityType.GetProperty("PublicKey").GetGetMethod().Invoke(entity, new object[] { }),
                 PrivateKey = (string)entityType.GetProperty("PrivateKey").GetGetMethod().Invoke(entity, new object[] { }),
+                PrivateKeyUnencrypted = (string)entityType.GetMethod("GetPrivateKey").Invoke(entity, new object[] { }),
                 Password = (string)entityType.GetProperty("Password").GetGetMethod().Invoke(entity, new object[] { }),
                 CreatedAt = (DateTime?)entityType.GetProperty("CreatedAt").GetGetMethod().Invoke(entity, new object[] { }),
                 UpdatedAt = (DateTime?)entityType.GetProperty("UpdatedAt").GetGetMethod().Invoke(entity, new object[] { }),
