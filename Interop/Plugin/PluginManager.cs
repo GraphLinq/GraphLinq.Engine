@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using NodeBlock.Engine.Attributes;
 
 namespace NodeBlock.Engine.Interop.Plugin
 {
@@ -11,7 +12,14 @@ namespace NodeBlock.Engine.Interop.Plugin
     {
         private static bool _pluginLoaded = false;
         private static List<BasePlugin> _plugins = new List<BasePlugin>();
+        private static List<ExportableObject> _exportableObjects = new List<ExportableObject>();
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        
+        public static BasePlugin FetchPluginByName(string name)
+        {
+            return _plugins.FirstOrDefault(x => x.GetType().FullName.Contains(name));
+        }
 
         public static void LoadPlugins()
         {
@@ -41,7 +49,7 @@ namespace NodeBlock.Engine.Interop.Plugin
                     }
 
                     _plugins.Add(plugin);
-                    logger.Info("Plugin " + plugin.GetType().FullName + " loaded with " + nodeCount + " nodes");
+                    logger.Info("Plugin " + plugin.GetType().FullName + " loaded with " + nodeCount + " nodes and " + _exportableObjects.Count + " exportables objects");
                 }
                 catch(Exception ex)
                 {

@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using NodeBlock.Engine.API.Services;
 using NodeBlock.Engine.API.Entities;
+using NodeBlock.Engine.Interop.Plugin;
+using NodeBlock.Engine.Storage.MariaDB;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace NodeBlock.Engine.API.Controllers
 {
@@ -28,6 +33,22 @@ namespace NodeBlock.Engine.API.Controllers
                 return BadRequest(new { message = "invalid wallet identifier" });
 
             return Ok(wallet);
+        }
+
+        [HttpGet("generate")]
+        public async Task<IActionResult> GenerateNewPersonalWallet([FromBody] Wallet walletParam)
+        {
+            var plugin = PluginManager.FetchPluginByName("Ethereum");
+
+            using (var scope = GraphsContainer.GetServiceProvider().CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<MariaDBStorage>();
+
+                return Ok(new
+                {
+
+                });
+            }
         }
     }
 }

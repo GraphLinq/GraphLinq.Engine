@@ -110,6 +110,11 @@ namespace NodeBlock.Engine
 
         }
 
+       public static ServiceProvider GetServiceProvider()
+       {
+            return services;
+       }
+
         public static bool InitActiveGraphs()
         {
             var graphStorages = RedisStorage.GetGraphStorages();
