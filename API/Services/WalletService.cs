@@ -2,12 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NodeBlock.Engine.API.Entities;
+using NodeBlock.Engine.Interop.Plugin;
+using NodeBlock.Engine.Interop.Entities;
 
 namespace NodeBlock.Engine.API.Services
 {
     public interface IWalletService
     {
         Task<Wallet> GetWalletInformations(int identifierId);
+        Task<ManagedWalletBridgeObject> GenerateNewManagedWallet(int walletId, string name);
     }
 
     public class WalletService : IWalletService
@@ -20,6 +23,11 @@ namespace NodeBlock.Engine.API.Services
         public async Task<Wallet> GetWalletInformations(int identifierId)
         {
             return await Task.Run(() => wallets.Find(x => x.IdentifierId == identifierId));
+        }
+
+        public async Task<ManagedWalletBridgeObject> GenerateNewManagedWallet(int walletId, string name)
+        {
+            return await Task.Run(() => EthereumPluginBridge.CreateOrGetWallet(walletId, name));
         }
     }
 }

@@ -8,6 +8,7 @@ using NodeBlock.Engine.Storage.MariaDB;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using NodeBlock.Engine.Interop.Plugin;
 
 namespace NodeBlock.Engine.API.Controllers
 {
@@ -35,20 +36,11 @@ namespace NodeBlock.Engine.API.Controllers
             return Ok(wallet);
         }
 
-        [HttpGet("generate")]
-        public async Task<IActionResult> GenerateNewPersonalWallet([FromBody] Wallet walletParam)
+        [HttpPost("create")]
+        public async Task<IActionResult> GenerateNewPersonalWallet([FromBody] ManagedWallet walletParam)
         {
-            var plugin = PluginManager.FetchPluginByName("Ethereum");
-
-            using (var scope = GraphsContainer.GetServiceProvider().CreateScope())
-            {
-                var context = scope.ServiceProvider.GetService<MariaDBStorage>();
-
-                return Ok(new
-                {
-
-                });
-            }
+            var wallet = await _walletService.GenerateNewManagedWallet(walletParam.WalletId, walletParam.WalletName);
+            return Ok(wallet);
         }
     }
 }
