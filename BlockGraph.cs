@@ -19,6 +19,8 @@ namespace NodeBlock.Engine
 {
     public class BlockGraph
     {
+        private const uint MAX_FAILED_CYCLE = 20;
+
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public string Name { get; }
         public Dictionary<string, Node> Nodes { get; set; }
@@ -87,6 +89,7 @@ namespace NodeBlock.Engine
             this.cancelCycleToken = new CancellationTokenSource();
             var task = new Task(async () =>
             {
+                int failedCycleCount = 0;
                 while(!this.cancelCycleToken.IsCancellationRequested)
                 {
                     if (this.pendingCyclesQueues[queueName].Count <= 0)
@@ -122,15 +125,22 @@ namespace NodeBlock.Engine
                             catch (Exception ex)
                             {
                                 logger.Error(ex, "Error when executing the cycle");
+                                failedCycleCount++;
                             }
                         }
                         catch (Exception ex2)
                         {
                             logger.Error(ex2, "Error when executing the cycle");
+                            failedCycleCount++;
                         }
                         finally
                         {
                             currentCycle = null;
+                            if(failedCycleCount >= MAX_FAILED_CYCLE)
+                            {
+                                failedCycleCount = 0;
+                                this.Stop(false);
+                            }
                         }
                     }
                 }
