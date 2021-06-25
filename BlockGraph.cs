@@ -136,11 +136,11 @@ namespace NodeBlock.Engine
                         finally
                         {
                             currentCycle = null;
-                            if(failedCycleCount >= MAX_FAILED_CYCLE)
-                            {
-                                failedCycleCount = 0;
-                                this.Stop(false);
-                            }
+                            //if(failedCycleCount >= MAX_FAILED_CYCLE)
+                            //{
+                            //    failedCycleCount = 0;
+                            //    this.Stop(false);
+                            //}
                         }
                     }
                 }
