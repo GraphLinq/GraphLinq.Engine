@@ -10,7 +10,7 @@ namespace NodeBlock.Engine.Nodes.Array
     public class EachElementArrayNode : Node
     {
         public EachElementArrayNode(string id, BlockGraph graph)
-            : base(id, graph, typeof(GetArrayElementAtIndexNode).Name)
+            : base(id, graph, typeof(EachElementArrayNode).Name)
         {
             this.InParameters = new Dictionary<string, NodeParameter>()
             {
