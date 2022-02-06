@@ -8,7 +8,6 @@ using NodeBlock.Engine.Storage.MariaDB;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using NodeBlock.Engine.Interop.Plugin;
 
 namespace NodeBlock.Engine.API.Controllers
 {
