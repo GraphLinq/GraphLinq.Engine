@@ -39,8 +39,6 @@ namespace NodeBlock.Engine.Nodes.Text
             }
 
             return (this.OutParameters["false"].Value as Node).Execute();
-
-            //return true;
         }
     }
 }
