@@ -7,6 +7,7 @@ namespace NodeBlock.Engine.Nodes.Text
 {
     [NodeDefinition("StringContainsMultiNode", "String Contains Multiple", NodeTypeEnum.Condition, "String")]
     [NodeGraphDescription("Check if a string contains any item in array")]
+    [NodeIDEParameters(Hidden = true)]
     public class StringContainsMultiNode : Node
     {
         public StringContainsMultiNode(string id, BlockGraph graph)

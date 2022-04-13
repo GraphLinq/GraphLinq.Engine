@@ -8,6 +8,7 @@ namespace NodeBlock.Engine.Nodes.Text
 {
     [NodeDefinition("StringMatchesRegexNode", "String Matches Regex", NodeTypeEnum.Condition, "String")]
     [NodeGraphDescription("Check if a string matches a regular expression")]
+    [NodeIDEParameters(Hidden = true)]
     public class StringMatchesRegexNode : Node
     {
         public StringMatchesRegexNode(string id, BlockGraph graph)

@@ -7,6 +7,7 @@ namespace NodeBlock.Engine.Nodes.Text
 {
     [NodeDefinition("StringSplitNode", "String Split", NodeTypeEnum.Function, "String")]
     [NodeGraphDescription("Split String By Character")]
+    [NodeIDEParameters(Hidden = true)]
     public class StringSplitNode : Node
     {
         public StringSplitNode(string id, BlockGraph graph)
