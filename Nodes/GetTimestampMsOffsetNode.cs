@@ -63,10 +63,13 @@ namespace NodeBlock.Engine.Nodes
 
                 if (period.Length > 0)
                 {
+                    if (period == "w") { duration = duration * 7; }
+
                     switch (period)
                     {
                         case "h": return DateTimeOffset.Now.AddHours(-duration).ToUnixTimeMilliseconds();
                         case "d": return DateTimeOffset.Now.AddDays(-duration).ToUnixTimeMilliseconds();
+                        case "w": return DateTimeOffset.Now.AddDays(-duration).ToUnixTimeMilliseconds();
                         case "m": return DateTimeOffset.Now.AddMonths(-duration).ToUnixTimeMilliseconds();
                         case "y": return DateTimeOffset.Now.AddYears(-duration).ToUnixTimeMilliseconds();
                         default: return false;
