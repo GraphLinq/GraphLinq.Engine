@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace NodeBlock.Engine.Nodes.Text
 {
-    [NodeDefinition("StringGetMatchUsingRegexNode", "String Get Match Using Regex", NodeTypeEnum.Condition, "String")]
+    [NodeDefinition("StringGetMatchUsingRegexNode", "String Get Match Using Regex", NodeTypeEnum.Function, "String")]
     [NodeGraphDescription("Extract match in string using regular expression")]
     [NodeIDEParameters(Hidden = false)]
     public class StringGetMatchUsingRegexNode : Node
@@ -23,23 +23,19 @@ namespace NodeBlock.Engine.Nodes.Text
             };
         }
 
-        public override bool CanBeExecuted => true;
+        public override bool CanBeExecuted => false;
 
-        public override bool CanExecute => true;
+        public override bool CanExecute => false;
 
-        public override bool OnExecution()
+        public override object ComputeParameterValue(NodeParameter parameter, object value)
         {
-            var original = this.InParameters["string"].GetValue().ToString();
-            var regex = this.InParameters["regex"].GetValue().ToString();
-
-                Regex r = new Regex(@regex);
-
-                if (r.Match(original).Success)
-                {
-                    return (this.OutParameters["returnText"].SetValue(r.Match(original).Value));
-                }
-
-            return (this.OutParameters["returnText"].SetValue(""));
+            if (parameter.Name == "returnText")
+            {
+                var original = this.InParameters["string"].GetValue().ToString();
+                var regex = this.InParameters["regex"].GetValue().ToString();
+                return Regex.Match(original, regex).Value;
+            }
+            return base.ComputeParameterValue(parameter, value);
         }
     }
 }

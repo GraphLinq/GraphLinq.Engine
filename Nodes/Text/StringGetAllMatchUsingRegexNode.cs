@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace NodeBlock.Engine.Nodes.Text
 {
-    [NodeDefinition("StringGetAllMatchUsingRegexNode", "String Get All Match Using Regex", NodeTypeEnum.Condition, "String")]
+    [NodeDefinition("StringGetAllMatchUsingRegexNode", "String Get All Match Using Regex", NodeTypeEnum.Function, "String")]
     [NodeGraphDescription("Get All Matches in a string using regular expression")]
     [NodeIDEParameters(Hidden = false)]
     public class StringGetAllMatchUsingRegexNode : Node

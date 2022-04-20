@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace NodeBlock.Engine.Nodes.Text
 {
-    [NodeDefinition("StringReplaceUsingRegexNode", "String Replace Using Regex", NodeTypeEnum.Condition, "String")]
+    [NodeDefinition("StringReplaceUsingRegexNode", "String Replace Using Regex", NodeTypeEnum.Function, "String")]
     [NodeGraphDescription("Replace match in string using regular expression")]
     [NodeIDEParameters(Hidden = false)]
     public class StringReplaceUsingRegexNode : Node
@@ -24,20 +24,20 @@ namespace NodeBlock.Engine.Nodes.Text
             };
         }
 
-        public override bool CanBeExecuted => true;
+        public override bool CanBeExecuted => false;
 
-        public override bool CanExecute => true;
+        public override bool CanExecute => false;
 
-        public override bool OnExecution()
+        public override object ComputeParameterValue(NodeParameter parameter, object value)
         {
-            var original = this.InParameters["string"].GetValue().ToString();
-            var regex = this.InParameters["regex"].GetValue().ToString();
-            var replace = this.InParameters["replace"].GetValue().ToString();
-
-            var returnText = Regex.Replace(original, regex, replace); 
-
-            return (this.OutParameters["returnText"].SetValue(returnText));
-
+            if (parameter.Name == "returnText")
+            {
+                var original = this.InParameters["string"].GetValue().ToString();
+                var regex = this.InParameters["regex"].GetValue().ToString();
+                var replace = this.InParameters["replace"].GetValue().ToString();
+                return Regex.Replace(original, regex, replace);
+            }
+            return base.ComputeParameterValue(parameter, value);
         }
     }
 }
