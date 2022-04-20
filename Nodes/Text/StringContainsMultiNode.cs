@@ -7,7 +7,7 @@ namespace NodeBlock.Engine.Nodes.Text
 {
     [NodeDefinition("StringContainsMultiNode", "String Contains Multiple", NodeTypeEnum.Condition, "String")]
     [NodeGraphDescription("Check if a string contains any item in array")]
-    [NodeIDEParameters(Hidden = true)]
+    [NodeIDEParameters(Hidden = false)]
     public class StringContainsMultiNode : Node
     {
         public StringContainsMultiNode(string id, BlockGraph graph)
@@ -33,7 +33,7 @@ namespace NodeBlock.Engine.Nodes.Text
             var items = this.InParameters["searchItems"].GetValue().ToString().Split(",");
             foreach (var item in items)
             {
-                if (original == item)
+                if (original.Contains(item))
                 {
                     return (this.OutParameters["true"].Value as Node).Execute();
                 }    

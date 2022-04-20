@@ -6,27 +6,26 @@ using System.Text.RegularExpressions;
 
 namespace NodeBlock.Engine.Nodes.Text
 {
-    [NodeDefinition("StringMatchesRegexNode", "String Matches Regex", NodeTypeEnum.Condition, "String")]
-    [NodeGraphDescription("Check if a string matches a regular expression")]
+    [NodeDefinition("StringGetMatchUsingRegexNode", "String Get Match Using Regex", NodeTypeEnum.Condition, "String")]
+    [NodeGraphDescription("Extract match in string using regular expression")]
     [NodeIDEParameters(Hidden = false)]
-    public class StringMatchesRegexNode : Node
+    public class StringGetMatchUsingRegexNode : Node
     {
-        public StringMatchesRegexNode(string id, BlockGraph graph)
-            : base(id, graph, typeof(StringMatchesRegexNode).Name)
+        public StringGetMatchUsingRegexNode(string id, BlockGraph graph)
+            : base(id, graph, typeof(StringGetMatchUsingRegexNode).Name)
         {
             this.InParameters.Add("string", new NodeParameter(this, "string", typeof(string), true));
             this.InParameters.Add("regex", new NodeParameter(this, "regex", typeof(string), true));
 
             this.OutParameters = new Dictionary<string, NodeParameter>()
             {
-                { "true", new NodeParameter(this, "true", typeof(Node), false) },
-                { "false", new NodeParameter(this, "false", typeof(Node), false) }
+                { "returnText", new NodeParameter(this, "returnText", typeof(string), false) }
             };
         }
 
         public override bool CanBeExecuted => true;
 
-        public override bool CanExecute => false;
+        public override bool CanExecute => true;
 
         public override bool OnExecution()
         {
@@ -37,10 +36,10 @@ namespace NodeBlock.Engine.Nodes.Text
 
                 if (r.Match(original).Success)
                 {
-                    return (this.OutParameters["true"].Value as Node).Execute();
+                    return (this.OutParameters["returnText"].SetValue(r.Match(original).Value));
                 }
 
-            return (this.OutParameters["false"].Value as Node).Execute();
+            return (this.OutParameters["returnText"].SetValue(""));
         }
     }
 }
