@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using NodeBlock.Engine.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,6 +32,9 @@ namespace NodeBlock.Engine.Interop
         [JsonProperty(PropertyName = "out_parameters")]
         public List<NodeParameterSchema> OutParameters;
 
+        [JsonProperty(PropertyName = "gas_cost")]
+        public long GasCost;
+
         public NodeSchema() { }
 
         public NodeSchema(Node node)
@@ -39,6 +43,14 @@ namespace NodeBlock.Engine.Interop
             this.Id = node.Id;
             this.Type = node.NodeType.ToString();
             this.CanBeExecuted = node.CanBeExecuted;
+            if (node.GetType().GetCustomAttributes(typeof(NodeGasConfiguration), true).Length > 0)
+            {
+                this.GasCost = (long)(node.GetType().GetCustomAttributes(typeof(NodeGasConfiguration), true)[0] as NodeGasConfiguration).BlockGasPrice;
+            }
+            else
+            {
+                this.GasCost = 0;
+            }
             this.CanExecute = node.CanExecute;
             this.InParameters = new List<NodeParameterSchema>();
             this.OutParameters = new List<NodeParameterSchema>();

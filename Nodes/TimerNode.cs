@@ -18,6 +18,7 @@ namespace NodeBlock.Engine.Nodes
             this.IsEventNode = true;
 
             this.InParameters.Add("intervalInSeconds", new NodeParameter(this, "intervalInSeconds", typeof(int), true));
+            this.InParameters.Add("triggerAtStart", new NodeParameter(this, "triggerAtStart", typeof(bool), true));
         }
 
         public override bool CanBeExecuted => false;
@@ -38,7 +39,10 @@ namespace NodeBlock.Engine.Nodes
             timer.Enabled = true;
             timer.Start();
 
-            this.Graph.AddCycle(this);
+            if(bool.Parse(this.InParameters["triggerAtStart"].GetValue().ToString()))
+            {
+                this.Graph.AddCycle(this);
+            }
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)

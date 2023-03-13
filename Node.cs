@@ -36,6 +36,7 @@ namespace NodeBlock.Engine
         public TraceItem CurrentTraceItem = null;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public long CustomTimeout = 0;
+        public string GasCost = "0";
         public List<NodeSpecialActionAttribute> SpecialActionsAttributes = new List<NodeSpecialActionAttribute>();
         public NodeIDEParametersAttribute IDEParameters { get; set; }
 
@@ -87,6 +88,15 @@ namespace NodeBlock.Engine
                 {
                     this.IDEParameters = nodeIdeParameters;
                 }
+            }
+
+            if (this.GetType().GetCustomAttributes(typeof(NodeGasConfiguration), true).Length > 0)
+            {
+                this.GasCost = ((this.GetType().GetCustomAttributes(typeof(NodeGasConfiguration), true)[0] as NodeGasConfiguration).BlockGasPrice).ToString();
+            }
+            else
+            {
+                this.GasCost = "0";
             }
 
             this.SpecialActionsAttributes = this.GetType().GetCustomAttributes(typeof(Attributes.NodeSpecialActionAttribute), true).Select(x => x as Attributes.NodeSpecialActionAttribute).ToList();

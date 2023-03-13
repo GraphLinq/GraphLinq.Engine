@@ -24,7 +24,7 @@ namespace NodeBlock.Engine.Nodes.Functions
         {
             var context = this.Graph.currentCycle.CurrentFunctionContext;
             var name = this.InParameters["name"].GetValue().ToString();
-            var value = this.InParameters["value"].GetValue().ToString();
+            var value = this.InParameters["value"].GetValue();
             if(context.ReturnValues.ContainsKey(name))
             {
                 context.ReturnValues[name] = value;

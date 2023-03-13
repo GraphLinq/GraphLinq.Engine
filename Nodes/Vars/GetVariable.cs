@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NodeBlock.Engine.Nodes.Vars
 {
-    [NodeDefinition("GetVariable", "Get variable", NodeTypeEnum.Function, "Base Variable")]
+    [NodeDefinition("GetVariable", "Get variable", NodeTypeEnum.Variable, "Base Variable")]
     [NodeGraphDescription("Return the value of the variable pre computed from a Set variable block")]
     public class GetVariable : Node
     {
@@ -21,7 +21,8 @@ namespace NodeBlock.Engine.Nodes.Vars
 
             this.OutParameters = new Dictionary<string, NodeParameter>()
             {
-                { "value", new NodeParameter(this, "value", typeof(object), true) }
+                { "value", new NodeParameter(this, "value", typeof(object), true) },
+                { "directName", new NodeParameter(this, "directName", typeof(string), true) }
             };
         }
 
@@ -32,7 +33,14 @@ namespace NodeBlock.Engine.Nodes.Vars
         {
             if (parameter.Name == "value")
             {
-                return this.Graph.MemoryVariables[this.InParameters["variableName"].GetValue().ToString()];
+                if(this.InParameters["variableName"].GetValue() == null)
+                {
+                    return this.Graph.MemoryVariables[this.OutParameters["directName"].GetValue().ToString()];
+                }
+                else
+                {
+                    return this.Graph.MemoryVariables[this.InParameters["variableName"].GetValue().ToString()];
+                }
             }
 
             return base.ComputeParameterValue(parameter, value);

@@ -25,6 +25,7 @@ namespace NodeBlock.Engine.Nodes.API
         public override void SetupConnector()
         {
             this.HostedAPI = new HostedGraphAPI(this.Graph);
+            this.Graph.AppendLog("debug", "New hosted API registered " + this.HostedAPI.URL);
             this.Next();
         }
 

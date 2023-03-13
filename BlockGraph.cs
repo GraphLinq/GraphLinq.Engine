@@ -367,6 +367,7 @@ namespace NodeBlock.Engine
             {
                 try
                 {
+                    currentCycle = new GraphExecutionCycle(this, DateTimeOffset.Now.ToUnixTimeSeconds(), x.Value, new Dictionary<string, NodeParameter>());
                     x.Value.SetupConnector();
                 }
                 catch (Exception ex)
