@@ -39,9 +39,12 @@ namespace NodeBlock.Engine.Nodes
             timer.Enabled = true;
             timer.Start();
 
-            if(bool.Parse(this.InParameters["triggerAtStart"].GetValue().ToString()))
+            if(this.InParameters.ContainsKey("triggerAtStart"))
             {
-                this.Graph.AddCycle(this);
+                if (bool.Parse(this.InParameters["triggerAtStart"].GetValue().ToString()))
+                {
+                    this.Graph.AddCycle(this);
+                }
             }
         }
 
