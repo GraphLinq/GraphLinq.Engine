@@ -54,9 +54,9 @@ namespace NodeBlock.Engine.Nodes.HTTP
                     var responseString = requestUrl.Result.Content.ReadAsStringAsync();
                     responseString.Wait(1000);
                     this.OutParameters["result"].Value = responseString.Result;
-                }         
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (this.OutParameters["exception"].Value != null)
                 {

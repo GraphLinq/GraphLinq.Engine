@@ -63,8 +63,8 @@ namespace NodeBlock.Engine
                 {
                     if (graph.IsRunning)
                     {
-                        graph.AppendLog("warn", string.Format("Graph hash {0} started his execution.", graph.UniqueHash));
-                        logger.Info("Graph hash {0} started his execution.", graph.UniqueHash);
+                        graph.AppendLog("warn", string.Format("Graph hash {0} started its execution.", graph.UniqueHash));
+                        logger.Info("Graph hash {0} started its execution.", graph.UniqueHash);
                     }
                 }
             }

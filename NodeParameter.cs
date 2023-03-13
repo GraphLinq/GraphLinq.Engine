@@ -62,7 +62,7 @@ namespace NodeBlock.Engine
                 }
                 return this.Node.ComputeParameterValue(this, this.Value);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return null;
             }

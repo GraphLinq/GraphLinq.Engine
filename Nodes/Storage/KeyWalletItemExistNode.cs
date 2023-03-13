@@ -11,7 +11,7 @@ namespace NodeBlock.Engine.Nodes.Storage
     public class KeyWalletItemExistNode : Node
     {
         public KeyWalletItemExistNode(string id, BlockGraph graph)
-           : base(id, graph, typeof(KeyItemExistNode).Name)
+           : base(id, graph, typeof(KeyWalletItemExistNode).Name)
         {
             this.InParameters = new Dictionary<string, NodeParameter>()
             {
