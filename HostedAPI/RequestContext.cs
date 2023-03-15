@@ -42,7 +42,7 @@ namespace NodeBlock.Engine.HostedAPI
 
         public async Task<bool> AwaitResponse()
         {
-            timeoutTask = Task.Delay(10000);
+            timeoutTask = Task.Delay(this.customTimeout);
             var result = await Task.WhenAny(completedTask.Task, timeoutTask);
             if(result == timeoutTask)
             {
