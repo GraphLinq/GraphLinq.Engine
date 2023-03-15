@@ -14,8 +14,10 @@ namespace NodeBlock.Engine.HostedAPI
             JSON = 1
         }
 
-        public RequestContext(HttpContext context, string rawBody)
+        public RequestContext( HttpContext context, string rawBody, BlockGraph graph, int customTimeout)
         {
+            this.graph = graph;
+            this.customTimeout = customTimeout;
             Context = context;
             RawBody = rawBody;
             this.parseRawBody();
@@ -29,6 +31,8 @@ namespace NodeBlock.Engine.HostedAPI
         private Task timeoutTask = null;
         public string Body { get; set; }
         public ResponseFormatTypeEnum ResponseFormatType = ResponseFormatTypeEnum.JSON;
+        private readonly BlockGraph graph;
+        private readonly int customTimeout;
 
         private void parseRawBody()
         {

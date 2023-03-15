@@ -19,13 +19,14 @@ namespace NodeBlock.Engine.HostedAPI
         public string Route { get; set; }
         public OnEndpointRequestNode EventsNode { get; set; }
         public int CacheTTL = -1;
+        public int CustomTimeout = 10000;
         public long LastResponseTime = -1;
         public string LastResponseCache = string.Empty;
 
 
         public async Task<RequestContext> OnRequest(HttpContext context, string rawBody)
         {
-            var requestContext = new RequestContext(context, rawBody);
+            var requestContext = new RequestContext(context, rawBody, this.HostedGraphAPI.Graph, this.CustomTimeout);
             if (EventsNode == null) return null;
             var timestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
             if(timestamp < LastResponseTime + this.CacheTTL && this.CacheTTL != -1 && this.LastResponseCache != string.Empty)
