@@ -15,6 +15,7 @@ namespace NodeBlock.Engine
         public BlockGraph Graph { get; }
         public long Timestamp { get; }
         public Node StartNode { get; }
+        public bool DebugTraceEnabled = false;
 
         public List<Node> ExecutedNodesInCycle;
         public Debugging.GraphTrace Trace;
@@ -42,6 +43,8 @@ namespace NodeBlock.Engine
             this.StartNode.BeginCycle();
             BigInteger usedGas = this.GetCycleExecutedGasPrice();
             this.Graph.currentContext.AddCycleCost(decimal.Parse(usedGas.ToString()));
+            if(DebugTraceEnabled) 
+                this.Graph.AppendLog("debug", this.Trace.ToString());
         }
 
         public BigInteger GetCycleExecutedGasPrice()

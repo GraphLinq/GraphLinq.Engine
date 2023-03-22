@@ -10,8 +10,8 @@ namespace NodeBlock.Engine.Debugging
         [JsonIgnore]
         public Node Node { get; }
 
-        private string NodeId;
-        private Dictionary<string, string> Parameters;
+        public string NodeId;
+        public Dictionary<string, string> Parameters;
         public long ExecutionTime;
         public Exception ExecutionException;
 

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using NodeBlock.Engine.Attributes;
 using NodeBlock.Engine.Encoding;
+using NodeBlock.Engine.Generics;
 using NodeBlock.Engine.Interop;
 using NodeBlock.Engine.Interop.Plugin;
 using NodeBlock.Engine.Nodes;
@@ -21,7 +22,6 @@ namespace NodeBlock.Engine
     {
         private const uint MAX_FAILED_CYCLE = 20;
 
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public string Name { get; }
         public Dictionary<string, Node> Nodes { get; set; }
 
@@ -34,23 +34,25 @@ namespace NodeBlock.Engine
         public GraphContextWrapper currentContext = null;
 
         public Dictionary<string, object> MemoryVariables = new Dictionary<string, object>();
-
-        private Dictionary<string, Task> queueTaskCycleThreads = new Dictionary<string, Task>();
-        private Dictionary<string, ConcurrentQueue<GraphExecutionCycle>> pendingCyclesQueues = new Dictionary<string, ConcurrentQueue<GraphExecutionCycle>>();
         public GraphExecutionCycle currentCycle;
+        public StackLimitList<GraphExecutionCycle> PreviousCycles = new StackLimitList<GraphExecutionCycle>(20);
 
-        private CancellationTokenSource cancelCycleToken;
         public bool IsRunning = false;
         public bool Debug = false;
+        public int CycleCountSinceStart = 0;
 
         public DateTime? RotateLastUpdate;
 
         // Events
         public static event EventHandler<BlockGraph> OnNewGraphLoaded;
-
         public event EventHandler OnGraphStarted;
         public event EventHandler OnGraphStopped;
         public event EventHandler OnNewCycle;
+
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private Dictionary<string, Task> queueTaskCycleThreads = new Dictionary<string, Task>();
+        private Dictionary<string, ConcurrentQueue<GraphExecutionCycle>> pendingCyclesQueues = new Dictionary<string, ConcurrentQueue<GraphExecutionCycle>>();
+        private CancellationTokenSource cancelCycleToken;
 
         public BlockGraph(string name = "", Node entryPoint = null, bool createEntryPoint = true)
         {
@@ -106,6 +108,10 @@ namespace NodeBlock.Engine
                             if (!this.IsRunning) return;
                             currentCycle = pendingCycle;
                             if (this.cancelCycleToken.IsCancellationRequested) return;
+
+                            // Add the cycle to the previous cycle list
+                            this.PreviousCycles.Push(pendingCycle);
+
                             Task cycleTask = new Task(() =>
                             {
                                 pendingCycle.Execute();
@@ -114,7 +120,9 @@ namespace NodeBlock.Engine
                             {
                                 Task timeoutTask = Task.Delay(pendingCycle.GetCycleMaxExecutionTime());
                                 cycleTask.Start();
+                                this.CycleCountSinceStart++;
                                 var taskResult = await Task.WhenAny(cycleTask, timeoutTask);
+
                                 if (timeoutTask == taskResult)
                                 {
                                     this.AppendLog("error", string.Format("Timeout occured on last cycle from graph hash: {0}", this.UniqueHash));
@@ -399,6 +407,7 @@ namespace NodeBlock.Engine
             {
                 try
                 {
+                    currentCycle = new GraphExecutionCycle(this, DateTimeOffset.Now.ToUnixTimeSeconds(), x.Value, new Dictionary<string, NodeParameter>());
                     x.Value.SetupEvent();
                 }
                 catch (Exception ex)

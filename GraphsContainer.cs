@@ -91,6 +91,8 @@ namespace NodeBlock.Engine
     
     public static class GraphsContainer
     {
+        public static long StartAt = 0;
+
         private static bool running = true;
         private static readonly Dictionary<string, GraphContextWrapper> _graphs = new Dictionary<string, GraphContextWrapper>();
         private static readonly object mutex = new object();
@@ -99,6 +101,7 @@ namespace NodeBlock.Engine
 
         static GraphsContainer()
         {
+            StartAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             services = new ServiceCollection()
             .AddScoped(provider => provider.GetService<MariaDBStorage>())
             .AddDbContextPool<MariaDBStorage>(options =>
@@ -343,6 +346,9 @@ namespace NodeBlock.Engine
             }
         }
 
-
+        public static Dictionary<string, GraphContextWrapper> GetGraphs()
+        {
+            return _graphs;
+        }
     }
 }

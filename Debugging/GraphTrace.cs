@@ -32,6 +32,16 @@ namespace NodeBlock.Engine.Debugging
             this.Exception = exception;
         }
 
+        public long GetExecutionTime()
+        {
+            return this.Stack.Select(x => x.ExecutionTime).Sum();
+        }
+
+        public bool GetExecutionSuccess()
+        {
+            return (this.Stack.FindAll(x => x.ExecutionException != null).Count > 0 ? false : true);
+        }
+
         public override string ToString()
         {
             return "Total execution time : " + this.Stack.Select(x => x.ExecutionTime).Sum() + "ms\n" +

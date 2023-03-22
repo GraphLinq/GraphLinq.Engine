@@ -115,11 +115,23 @@ namespace NodeBlock.Engine.API.Controllers
 
                 if (graph == null)
                     return StatusCode(404);
+                var hostedApiEndpoints = new List<string>();
+                if(graph.graph.HasHostedAPI())
+                {
+                    foreach(var endpoint in graph.graph.GetHostedAPI().HostedAPI.Endpoints)
+                    {
+                        hostedApiEndpoints.Add(endpoint.Key);
+                    }
+                }
+
                 return Ok(new
                 {
                     state = graph.currentGraphState,
                     loadedAt = graph.LoadedAt,
-                    stoppedAt = graph.StoppedAt
+                    stoppedAt = graph.StoppedAt,
+                    cycleCount = graph.graph.CycleCountSinceStart,
+                    hostedApi = graph.graph.HasHostedAPI(),
+                    hostedApiEndpoints = hostedApiEndpoints,
                 });
             }
             catch (Exception error)
@@ -178,13 +190,107 @@ namespace NodeBlock.Engine.API.Controllers
         }
 
         [HttpGet("healthcheck")]
-        public IActionResult HealthCheck([FromBody] Graph raw)
+        public IActionResult HealthCheck()
         {
             try
             {
                 return Ok(new
                 {
                     alive = true
+                });
+            }
+            catch (Exception error)
+            {
+                logger.Error(error);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("metrics")]
+        public IActionResult Metrics()
+        {
+            try
+            {
+                var graphs = GraphsContainer.GetGraphs();
+
+                return Ok(new
+                {
+                    engine = new
+                    {
+                        started_at = GraphsContainer.StartAt
+                    },
+                    metrics = new
+                    {
+                        total_graphs = graphs.Count
+                    }
+                });
+            }
+            catch (Exception error)
+            {
+                logger.Error(error);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("graph_list")]
+        public IActionResult GraphList()
+        {
+            try
+            {
+                var graphs = GraphsContainer.GetGraphs();
+                return Ok(new
+                {
+                    graphs = graphs.Select(x => new
+                    {
+                        name = x.Value.graph.Name,
+                        hash = x.Value.graph.UniqueHash,
+                        wallet_identifier = x.Value.walletIdentifier,
+                        state = x.Value.currentGraphState,
+                        loaded_at = x.Value.LoadedAt
+                    })
+                }); ;
+            }
+            catch (Exception error)
+            {
+                logger.Error(error);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("trace")]
+        public IActionResult GetGraphTraces([FromBody] Graph raw)
+        {
+            try
+            {
+                var graph = GraphsContainer.GetRunningGraphByHash(raw.UniqueHash);
+                if (graph == null)
+                {
+                    return StatusCode(404);
+                }
+                var traces = graph.graph.PreviousCycles.Select(x => new
+                {
+                    start_at = x.Timestamp,
+                    trace_start_node = x.StartNode.FriendlyName,
+                    execution_duration = x.Trace.GetExecutionTime(),
+                    execution_success = x.Trace.GetExecutionSuccess(),
+                    execution_exception = x.Trace.Exception == null ? string.Empty : x.Trace.Exception.ToString(),
+                    stack = x.Trace.Stack.Select(y => new
+                    {
+                        id = y.NodeId,
+                        execution_node_duration = y.ExecutionTime,
+                        node_type = y.Node.NodeType,
+                        execution_node_exception = y.ExecutionException == null ? string.Empty : y.ExecutionException.ToString(),
+                        parameters = y.Parameters.Select(z => new
+                        {
+                            key = z.Key,
+                            value = z.Value
+                        })
+                    })
+                });
+
+                return Ok(new
+                {
+                    traces = traces
                 });
             }
             catch (Exception error)

@@ -131,6 +131,12 @@ namespace NodeBlock.Engine
             if(cycle != null)
             {
                 traceItem = cycle.AddExecutedNode(this);
+                if(cycle.ExecutedNodesInCycle.Count > 500)
+                {
+                    this.Graph.AppendLog("error", "Max stack limit reached, stopping the graph to avoid memory leaks");
+                    this.Graph.Stop();
+                    return false;
+                }
             }
 
             if (this.NodeType != typeof(EntryPointNode).Name && this.NodeType != typeof(FunctionNode).Name)
