@@ -13,5 +13,7 @@ namespace NodeBlock.Engine.Storage.Redis.Entities
         public string Message { get; set; }
         [JsonProperty("timestamp")]
         public long Timestamp { get; set; }
+        [JsonProperty("graph_hash")]
+        public string GraphHash { get; internal set; }
     }
 }

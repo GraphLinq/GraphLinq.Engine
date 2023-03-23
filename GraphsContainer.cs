@@ -14,6 +14,7 @@ using NodeBlock.Engine.Storage.MariaDB;
 using Microsoft.EntityFrameworkCore;
 using MySQL.Data.EntityFrameworkCore;
 using NodeBlock.Engine.Storage.MariaDB.Entities;
+using NodeBlock.Engine.Storage;
 
 namespace NodeBlock.Engine
 {
@@ -120,7 +121,7 @@ namespace NodeBlock.Engine
 
         public static bool InitActiveGraphs()
         {
-            var graphStorages = RedisStorage.GetGraphStorages();
+            var graphStorages = StorageManager.GetStorage().GetGraphStorages();
             logger.Info("Starting back the context of {0} graph(s) from last execution", graphStorages.Count);
 
             graphStorages.ForEach(x =>
@@ -210,7 +211,7 @@ namespace NodeBlock.Engine
         {
             var lists = _graphs.Where(x => !x.Value.graph.Debug && x.Value.currentGraphState == GraphStateEnum.STARTED ||
                 x.Value.currentGraphState == GraphStateEnum.RESTARTING).ToList().Select(x => x.Value.graph).ToList();
-            RedisStorage.SaveListActiveGraphs(lists);
+            StorageManager.GetStorage().SaveListActiveGraphs(lists);
         }
 
         public static void UpdateStorageStateGraph(GraphContextWrapper context, GraphStateEnum newState)
@@ -218,7 +219,7 @@ namespace NodeBlock.Engine
             try
             {
                 context.currentGraphState = newState;
-                var graphStorage = RedisStorage.SetGraphStorage(context.graph,
+                var graphStorage = StorageManager.GetStorage().SetGraphStorage(context.graph,
                     context.walletIdentifier, newState);
                 if (context.graph != null && context.graph.IsRunning &&
                     newState == GraphStateEnum.STOPPED)
@@ -257,7 +258,7 @@ namespace NodeBlock.Engine
         {
             try
             {
-                var graphStorage = RedisStorage.SetGraphStorage(graphContext.graph,
+                var graphStorage = StorageManager.GetStorage().SetGraphStorage(graphContext.graph,
                     graphContext.walletIdentifier, graphContext.currentGraphState);
 
                 // to avoid redis update on each started graph at engine init

@@ -7,6 +7,8 @@ using NodeBlock.Engine.Interop.Plugin;
 using NodeBlock.Engine.Nodes;
 using NodeBlock.Engine.Nodes.API;
 using NodeBlock.Engine.Nodes.Encoding;
+using NodeBlock.Engine.Nodes.Functions;
+using NodeBlock.Engine.Storage;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -53,6 +55,7 @@ namespace NodeBlock.Engine
         private Dictionary<string, Task> queueTaskCycleThreads = new Dictionary<string, Task>();
         private Dictionary<string, ConcurrentQueue<GraphExecutionCycle>> pendingCyclesQueues = new Dictionary<string, ConcurrentQueue<GraphExecutionCycle>>();
         private CancellationTokenSource cancelCycleToken;
+        private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public BlockGraph(string name = "", Node entryPoint = null, bool createEntryPoint = true)
         {
@@ -92,7 +95,7 @@ namespace NodeBlock.Engine
             var task = new Task(async () =>
             {
                 int failedCycleCount = 0;
-                while(!this.cancelCycleToken.IsCancellationRequested)
+                while (!this.cancelCycleToken.IsCancellationRequested)
                 {
                     if (this.pendingCyclesQueues[queueName].Count <= 0)
                     {
@@ -104,7 +107,7 @@ namespace NodeBlock.Engine
                     {
                         try
                         {
-
+                            await semaphoreSlim.WaitAsync();
                             if (!this.IsRunning) return;
                             currentCycle = pendingCycle;
                             if (this.cancelCycleToken.IsCancellationRequested) return;
@@ -144,6 +147,7 @@ namespace NodeBlock.Engine
                         finally
                         {
                             currentCycle = null;
+                            semaphoreSlim.Release();
                             //if(failedCycleCount >= MAX_FAILED_CYCLE)
                             //{
                             //    failedCycleCount = 0;
@@ -471,16 +475,34 @@ namespace NodeBlock.Engine
             }
             if (CheckLogRotate())
             {
-                var currentLogs = Storage.Redis.RedisStorage.GetLogsForGraph(this.UniqueHash);
+                var currentLogs = StorageManager.GetStorage().GetLogsForGraph(this.UniqueHash);
                 if (currentLogs.Count > 100)
                     currentLogs.RemoveRange(0, 50);
                 currentLogs.Add(new Storage.Redis.Entities.LogEntry() { Type = type, Message = message, Timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds() });
-                Storage.Redis.RedisStorage.SaveLogsEntries(this.UniqueHash, currentLogs);
+                StorageManager.GetStorage().SaveLogsEntries(this.UniqueHash, currentLogs);
             }
             else
-            {   
-                Storage.Redis.RedisStorage.AppendLogForGraph(this.UniqueHash, type, message);
+            {
+                StorageManager.GetStorage().AppendLogForGraph(this.UniqueHash, type, message);
             }
+        }
+
+        public Dictionary<string, object> CallFunctionWithNewCycle(string name, Dictionary<string, object> parameters)
+        {
+
+            var functionNode = this.Nodes.FirstOrDefault(x => x.Value.NodeType == "FunctionNode" &&
+                x.Value.InParameters["name"].GetValue().ToString() == name).Value as FunctionNode;
+            if (functionNode == null) return null;
+            semaphoreSlim.Wait();
+            //TODO: Verify if there is no cycle in pending to execute the function
+            currentCycle = new GraphExecutionCycle(this, DateTimeOffset.Now.ToUnixTimeSeconds(), functionNode, new Dictionary<string, NodeParameter>());
+                functionNode.CallParameters = parameters;
+                functionNode.Execute();
+            semaphoreSlim.Release();
+
+            this.PreviousCycles.Push(currentCycle);
+            this.currentCycle = null;
+            return functionNode.Context.ReturnValues;
         }
 
         public bool HasHostedAPI()
@@ -492,6 +514,11 @@ namespace NodeBlock.Engine
         public ExposeAPIBlockNode GetHostedAPI()
         {
             return this.Nodes.ToList().FirstOrDefault(x => x.Value.NodeType == typeof(ExposeAPIBlockNode).Name).Value as ExposeAPIBlockNode;
+        }
+
+        public List<FunctionNode> GetFunctions()
+        {
+            return this.Nodes.ToList().FindAll(x => x.Value.NodeType == typeof(FunctionNode).Name).Select(x => x.Value as FunctionNode).ToList();
         }
     }
 }

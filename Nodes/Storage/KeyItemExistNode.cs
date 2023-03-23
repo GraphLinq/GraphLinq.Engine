@@ -1,4 +1,5 @@
 ﻿using NodeBlock.Engine.Attributes;
+using NodeBlock.Engine.Storage;
 using NodeBlock.Engine.Storage.Redis;
 using System;
 using System.Collections.Generic;
@@ -30,8 +31,7 @@ namespace NodeBlock.Engine.Nodes.Storage
 
         public override bool OnExecution()
         {
-            // return RedisStorage.GetGraphKeyItem(this.Graph, this.InParameters["key"].GetValue().ToString());
-            if (RedisStorage.GraphKeyItemExist(this.Graph, this.InParameters["key"].GetValue().ToString()))
+            if (StorageManager.GetStorage().GraphKeyItemExist(this.Graph, this.InParameters["key"].GetValue().ToString()))
             {
                 if (this.OutParameters["true"].Value == null) return true;
                 return (this.OutParameters["true"].Value as Node).Execute();

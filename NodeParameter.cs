@@ -68,6 +68,25 @@ namespace NodeBlock.Engine
             }
         }
 
+        public Node GetNode()
+        {
+            try
+            {
+                if (this.IsIn)
+                {
+                    if (this.Assignments != null)
+                    {
+                        return this.Assignments.Node;
+                    }
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public double GetValueAsDouble()
         {
             if(this.GetValue().GetType() != typeof(double) &&

@@ -24,7 +24,6 @@ namespace NodeBlock.Engine.Nodes.Functions
 
         public override bool OnExecution()
         {
-            var functions = this.Graph.Nodes.ToList().FindAll(x => x.Value.NodeType == "FunctionNode");
             var functionNode = this.Graph.Nodes.FirstOrDefault(x => x.Value.NodeType == "FunctionNode" &&
                 x.Value.InParameters["name"].GetValue().ToString() == this.InParameters["name"].GetValue().ToString()).Value as FunctionNode;
             if(functionNode == null)

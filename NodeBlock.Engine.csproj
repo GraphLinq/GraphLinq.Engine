@@ -14,6 +14,7 @@
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="2.0.0" />
     <PackageReference Include="GraphQL" Version="3.3.2" />
+    <PackageReference Include="LiteDB" Version="5.0.16" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.22" />

@@ -1,4 +1,5 @@
 ﻿using NodeBlock.Engine.Attributes;
+using NodeBlock.Engine.Storage;
 using NodeBlock.Engine.Storage.Redis;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace NodeBlock.Engine.Nodes.Storage
         {
             if (parameter.Name == "value")
             {
-                var v = RedisStorage.GetWalletGraphKeyItem(this.Graph, this.InParameters["key"].GetValue().ToString());
+                var v = StorageManager.GetStorage().GetWalletGraphKeyItem(this.Graph, this.InParameters["key"].GetValue().ToString());
                 return v;
             }
 

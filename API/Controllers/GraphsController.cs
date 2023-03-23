@@ -8,6 +8,7 @@ using NodeBlock.Engine.Encoding;
 using System.Linq;
 using System.Collections.Generic;
 using NodeBlock.Engine.Storage.Redis;
+using NodeBlock.Engine.Storage;
 
 namespace NodeBlock.Engine.API.Controllers
 {
@@ -51,7 +52,7 @@ namespace NodeBlock.Engine.API.Controllers
                 if (debugGraph != null)
                 {
                     graph.UniqueHash = debugGraph.graph.UniqueHash;
-                    RedisStorage.RemoveGraphLogs(graph.UniqueHash);
+                    StorageManager.GetStorage().RemoveGraphLogs(graph.UniqueHash);
                 }
             }
 
@@ -176,7 +177,7 @@ namespace NodeBlock.Engine.API.Controllers
         {
             try
             {
-                var logs = Storage.Redis.RedisStorage.GetLogsForGraph(raw.UniqueHash);
+                var logs = StorageManager.GetStorage().GetLogsForGraph(raw.UniqueHash);
                 return Ok(new
                 {
                     logs = logs
@@ -291,6 +292,57 @@ namespace NodeBlock.Engine.API.Controllers
                 return Ok(new
                 {
                     traces = traces
+                });
+            }
+            catch (Exception error)
+            {
+                logger.Error(error);
+                return StatusCode(500);
+            }
+        }
+
+
+        [HttpPost("functions")]
+        public IActionResult GetGraphFunctions([FromBody] Graph raw)
+        {
+            try
+            {
+                var graph = GraphsContainer.GetRunningGraphByHash(raw.UniqueHash);
+                if (graph == null)
+                {
+                    return StatusCode(404);
+                }
+                return Ok(new
+                {
+                    functions = graph.graph.GetFunctions().Select(x => new
+                    {
+                        id = x.Id,
+                        name = x.InParameters["name"].GetValue().ToString(),
+                        in_parameters = x.GetFunctionInParameters()
+                    })
+                });
+            }
+            catch (Exception error)
+            {
+                logger.Error(error);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("functions/call")]
+        public IActionResult CallGraphFunctions([FromBody] GraphCallFunction raw)
+        {
+            try
+            {
+                var graph = GraphsContainer.GetRunningGraphByHash(raw.UniqueHash);
+                if (graph == null)
+                {
+                    return StatusCode(404);
+                }
+                var fnResult = graph.graph.CallFunctionWithNewCycle(raw.FunctionName, raw.FunctionCallParameters);
+                return Ok(new
+                {
+                    result = fnResult
                 });
             }
             catch (Exception error)

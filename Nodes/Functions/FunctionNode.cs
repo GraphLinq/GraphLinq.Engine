@@ -26,5 +26,32 @@ namespace NodeBlock.Engine.Nodes.Functions
             this.Graph.currentCycle.CurrentFunctionContext = this.Context;
             return true;
         }
+
+        public List<string> GetFunctionInParameters()
+        {
+            var parameters = new List<string>();
+
+            this.dissectRequiredParameters(this, parameters);
+
+            return parameters;
+        }
+
+        private void dissectRequiredParameters(Node fromNode, List<string> parameters)
+        {
+            if (fromNode.OutNode == null) return;
+            foreach (var inParametersNode in fromNode.OutNode.InParameters)
+            {
+                if(inParametersNode.Value.GetNode() != null)
+                {
+                    if (typeof(GetFunctionParameterNode) == inParametersNode.Value.GetNode().GetType())
+                    {
+                        var paramNode = inParametersNode.Value.GetNode() as GetFunctionParameterNode;
+                        parameters.Add(paramNode.InParameters["name"].GetValue().ToString());
+                    }
+                }
+            }
+            
+            this.dissectRequiredParameters(fromNode.OutNode, parameters);
+        }
     }
 }
