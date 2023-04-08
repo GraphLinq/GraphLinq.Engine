@@ -144,7 +144,7 @@ namespace NodeBlock.Engine
                 if (!this.CanBeExecuted) return false;
             }
 
-            //stop the execution if the state isnt started
+            //stop the execution if the state isn't started
             if (!(this.Graph.currentContext.currentGraphState == Enums.GraphStateEnum.STARTED))
             {
                 this.Graph.Stop();
@@ -194,12 +194,12 @@ namespace NodeBlock.Engine
 
         public Dictionary<string, NodeParameter> InstanciateParametersForCycle()
         {
-            var instanciatedCycleParameters = new Dictionary<string, NodeParameter>();
+            var instanciateCycleParameters = new Dictionary<string, NodeParameter>();
             this.OutParameters.ToList().ForEach(x =>
             {
-                instanciatedCycleParameters.Add(x.Key, x.Value.Clone() as NodeParameter);
+                instanciateCycleParameters.Add(x.Key, x.Value.Clone() as NodeParameter);
             });
-            return instanciatedCycleParameters;
+            return instanciateCycleParameters;
         }
 
         public virtual void SetupEvent()
