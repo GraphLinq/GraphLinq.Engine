@@ -19,7 +19,7 @@ namespace NodeBlock.Engine
 
         public List<Node> ExecutedNodesInCycle;
         public Debugging.GraphTrace Trace;
-        public Dictionary<string, NodeParameter> StartNodeInstanciateParameters;
+        public Dictionary<string, NodeParameter> StartNodeInstanciatedParameters;
         public FunctionContext CurrentFunctionContext { get; set; }
 
         public GraphExecutionCycle(BlockGraph graph, long timestamp, Node startNode, Dictionary<string, NodeParameter> parameters = null)
@@ -30,12 +30,12 @@ namespace NodeBlock.Engine
             ExecutedNodesInCycle = new List<Node>();
             this.Trace = new Debugging.GraphTrace(this);
             this.AddExecutedNode(StartNode);
-            this.StartNodeInstanciateParameters = parameters != null ? parameters : this.StartNode.InstanciateParametersForCycle();
+            this.StartNodeInstanciatedParameters = parameters != null ? parameters : this.StartNode.InstanciatedParametersForCycle();
         }
 
         public void Execute()
         {
-            this.StartNodeInstanciateParameters.ToList().ForEach(x =>
+            this.StartNodeInstanciatedParameters.ToList().ForEach(x =>
             {
                 this.StartNode.OutParameters[x.Key].Value = x.Value.Value;
             });
