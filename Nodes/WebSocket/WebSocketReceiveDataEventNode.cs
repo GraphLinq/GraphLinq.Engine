@@ -39,7 +39,7 @@ namespace NodeBlock.Engine.Nodes.WebSocket
 
         private void WebSocketClientNode_OnDataReceived(object sender, string data)
         {
-            var instanciatedParameters = this.InstanciateParametersForCycle();
+            var instanciatedParameters = this.InstanciatedParametersForCycle();
             instanciatedParameters["data"].SetValue(data);
             this.Graph.AddCycle(this, instanciatedParameters);
         }

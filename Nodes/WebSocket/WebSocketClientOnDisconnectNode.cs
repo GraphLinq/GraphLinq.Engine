@@ -32,7 +32,7 @@ namespace NodeBlock.Engine.Nodes.WebSocket
         {
             WebSocketClientConnectorNode clientNode = this.InParameters["webSocketClient"].GetValue() as WebSocketClientConnectorNode;
             clientNode.OnClose -= ClientNode_OnClose;
-            var instanciatedParameters = this.InstanciateParametersForCycle();
+            var instanciatedParameters = this.InstanciatedParametersForCycle();
             this.Graph.AddCycle(this, instanciatedParameters);
         }
 
