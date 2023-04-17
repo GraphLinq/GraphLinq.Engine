@@ -16,6 +16,71 @@ namespace NodeBlock.Engine.API.Controllers
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+        [HttpGet("{graphId}/web/{*graphEndpoint}")]
+        public async Task<IActionResult> RequestHostedGraphPublicPage(string graphId, string graphEndpoint)
+        {
+            try
+            {
+                var graphContext = GraphsContainer.GetRunningGraphByHash(graphId);
+                if (graphContext == null)
+                    return BadRequest(new { success = false, message = string.Format("Graph {0} not loaded in the GraphLinq engine", graphId) });
+
+                if (!graphContext.graph.HasHostedAPI())
+                    return BadRequest(new { success = false, message = string.Format("Graph {0} doesn't have a hosted API", graphId) });
+
+                var graphHostedApi = graphContext.graph.GetHostedAPI().HostedAPI;
+                if (!graphHostedApi.Endpoints.ContainsKey(graphEndpoint))
+                    return BadRequest(new { success = false, message = string.Format("Graph {0} doesn't have this endpoint available", graphId) });
+
+                var endpoint = graphHostedApi.Endpoints[graphEndpoint];
+
+                var context = await endpoint.OnRequest(HttpContext, string.Empty);
+                if(endpoint.ContentType == "application/json")
+                {
+                    // Since it's not api we need to switch the content to html
+                    context.ResponseFormatType = HostedAPI.RequestContext.ResponseFormatTypeEnum.HTML;
+                }
+                else
+                {
+                    switch(endpoint.ContentType)
+                    {
+                        case "text/html":
+                            context.ResponseFormatType = HostedAPI.RequestContext.ResponseFormatTypeEnum.HTML;
+                            break;
+
+                        case "application/javascript":
+                            context.ResponseFormatType = HostedAPI.RequestContext.ResponseFormatTypeEnum.JS;
+                            break;
+
+                        case "text/css":
+                            context.ResponseFormatType = HostedAPI.RequestContext.ResponseFormatTypeEnum.CSS;
+                            break;
+                    }
+                }
+                if (context == null) return BadRequest();
+
+                switch (context.ResponseFormatType)
+                {
+                    case HostedAPI.RequestContext.ResponseFormatTypeEnum.JSON:
+                        return Content(context.Body, "application/json");
+
+                    case HostedAPI.RequestContext.ResponseFormatTypeEnum.JS:
+                        return Content(context.Body, "application/javascript");
+
+                    case HostedAPI.RequestContext.ResponseFormatTypeEnum.CSS:
+                        return Content(context.Body, "text/css");
+
+                    default:
+                        return Content(context.Body, "text/html");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                return BadRequest("Unknown error");
+            }
+        }
+
         [HttpPost("{graphId}/{*graphEndpoint}")]
         public async Task<IActionResult> RequestHostedGraphAPI(string graphId, string graphEndpoint)
         {

@@ -42,7 +42,7 @@ namespace NodeBlock.Engine
         public bool IsRunning = false;
         public bool Debug = false;
         public int CycleCountSinceStart = 0;
-
+        public long StartedAt = 0;
         public DateTime? RotateLastUpdate;
 
         // Events
@@ -191,7 +191,7 @@ namespace NodeBlock.Engine
             try
             {
                 this.queueTaskCycleThreads.ToList().ForEach(x => x.Value.Dispose());
-                this.cancelCycleToken.Cancel();
+                if(this.cancelCycleToken != null) this.cancelCycleToken.Cancel();
             }
             catch(Exception ex)
             {
@@ -370,6 +370,7 @@ namespace NodeBlock.Engine
 
         public void Start(GraphContextWrapper context)
         {
+            this.StartedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             this.currentContext = context;
             this.MemoryVariables = new Dictionary<string, object>();
             GraphsContainer.UpdateStorageStateGraph(context, Enums.GraphStateEnum.STARTED);

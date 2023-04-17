@@ -11,7 +11,10 @@ namespace NodeBlock.Engine.HostedAPI
     {
         public enum ResponseFormatTypeEnum
         {
-            JSON = 1
+            JSON = 1,
+            HTML = 2,
+            JS = 3,
+            CSS = 4
         }
 
         public RequestContext( HttpContext context, string rawBody, BlockGraph graph, int customTimeout)
