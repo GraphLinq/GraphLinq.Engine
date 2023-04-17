@@ -50,7 +50,7 @@ namespace NodeBlock.Engine
         {
             int totalThreads = Process.GetCurrentProcess().Threads.Count;
 
-            logger.Info(string.Format("New graph loaded of {0} bytes (hash: {1}, currentState: {2}, {3} threads runnings)",
+            logger.Info(string.Format("New graph loaded of {0} bytes (hash: {1}, currentState: {2}, {3} threads running)",
                      graph.RawGraphData.Length, graph.UniqueHash, currentGraphState.ToString(), Convert.ToString(totalThreads)));
 
             if (engineInit || currentGraphState == GraphStateEnum.STARTING)
@@ -261,7 +261,7 @@ namespace NodeBlock.Engine
                 var graphStorage = StorageManager.GetStorage().SetGraphStorage(graphContext.graph,
                     graphContext.walletIdentifier, graphContext.currentGraphState);
 
-                // to avoid redis update on each started graph at engine init
+                // to avoid Redis update on each started graph at engine init
                 if (!engineInit)
                     UpdateAliveStorage();
             }
@@ -326,7 +326,7 @@ namespace NodeBlock.Engine
                     {
                         if (_graphs.ContainsKey(graph.UniqueHash))
                             return;
-                        //create and save the graph in the hashmap
+                        //create and save the graph in the hash map
                         var wrapper = new GraphContextWrapper(graph, walletIdentifier, initialState);
                         _graphs.Add(graph.UniqueHash, wrapper);
 

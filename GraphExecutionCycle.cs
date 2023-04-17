@@ -30,7 +30,7 @@ namespace NodeBlock.Engine
             ExecutedNodesInCycle = new List<Node>();
             this.Trace = new Debugging.GraphTrace(this);
             this.AddExecutedNode(StartNode);
-            this.StartNodeInstanciatedParameters = parameters != null ? parameters : this.StartNode.InstanciateParametersForCycle();
+            this.StartNodeInstanciatedParameters = parameters != null ? parameters : this.StartNode.InstanciatedParametersForCycle();
         }
 
         public void Execute()

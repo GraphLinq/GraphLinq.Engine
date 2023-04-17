@@ -25,6 +25,7 @@
     <PackageReference Include="Nethereum.Contracts" Version="3.8.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.8" />
+    <PackageReference Include="Sentry.NLog" Version="3.29.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
   </ItemGroup>
   

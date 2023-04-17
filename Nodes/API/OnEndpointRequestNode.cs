@@ -32,7 +32,7 @@ namespace NodeBlock.Engine.Nodes.API
 
         public void OnRequest(RequestContext requestContext)
         {
-            var parameters = this.InstanciateParametersForCycle();
+            var parameters = this.InstanciatedParametersForCycle();
             parameters["requestContext"].SetValue(requestContext);
             this.Graph.AddCycle(this, parameters, "api");
         }
