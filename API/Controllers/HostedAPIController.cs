@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using NodeBlock.Engine.HostedAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,13 +30,24 @@ namespace NodeBlock.Engine.API.Controllers
                     return BadRequest(new { success = false, message = string.Format("Graph {0} doesn't have a hosted API", graphId) });
 
                 var graphHostedApi = graphContext.graph.GetHostedAPI().HostedAPI;
-                if (!graphHostedApi.Endpoints.ContainsKey(graphEndpoint))
-                    return BadRequest(new { success = false, message = string.Format("Graph {0} doesn't have this endpoint available", graphId) });
+                if(graphEndpoint != null)
+                {
+                    if (!graphHostedApi.Endpoints.ContainsKey(graphEndpoint))
+                        return BadRequest(new { success = false, message = string.Format("Graph {0} doesn't have this endpoint available", graphId) });
+                }
 
-                var endpoint = graphHostedApi.Endpoints[graphEndpoint];
+                HostedEndpoint endpoint = null;
+                if (graphEndpoint != null)
+                {
+                    endpoint = graphHostedApi.Endpoints[graphEndpoint];
+                }
+                else
+                {
+                    endpoint = graphHostedApi.Endpoints[""];
+                }
 
                 var context = await endpoint.OnRequest(HttpContext, string.Empty);
-                if(endpoint.ContentType == "application/json")
+                if(endpoint.ContentType == "application/json" && !context.Body.Trim().StartsWith("{"))
                 {
                     // Since it's not api we need to switch the content to html
                     context.ResponseFormatType = HostedAPI.RequestContext.ResponseFormatTypeEnum.HTML;

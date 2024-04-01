@@ -25,6 +25,7 @@ namespace NodeBlock.Engine
         public string NodeGroupName { get; set; }
         public string NodeBlockType { get; set; }
         public string NodeDescription { get; set; }
+        public string CustomIcon { get; set; }
         public Dictionary<string, NodeParameter> InParameters { get; set; }
         public Dictionary<string, NodeParameter> OutParameters { get; set; }
         public Node OutNode { get; set; }
@@ -52,6 +53,7 @@ namespace NodeBlock.Engine
                 this.FriendlyName = nodeDefinition.FriendlyName;
                 this.NodeBlockType = nodeDefinition.NodeType;
                 this.NodeGroupName = nodeDefinition.GroupName;
+                this.CustomIcon = nodeDefinition.CustomIcon;
             }
 
             if (this.GetType().GetCustomAttributes(typeof(Attributes.NodeCycleLimit), true).Length > 0)

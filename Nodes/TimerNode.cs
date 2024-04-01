@@ -7,7 +7,7 @@ using System.Timers;
 
 namespace NodeBlock.Engine.Nodes
 {
-    [NodeDefinition("TimerNode", "Timer", NodeTypeEnum.Event, "Time")]
+    [NodeDefinition("TimerNode", "Timer", NodeTypeEnum.Event, "Time", CustomIcon = "timer")]
     [NodeGasConfiguration("10000000000000")]
     [NodeGraphDescription("Start a timer that will init a new execution cycle, from in parameter specified time.")]
     public class TimerNode : Node

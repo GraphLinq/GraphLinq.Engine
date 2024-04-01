@@ -33,6 +33,8 @@ namespace NodeBlock.Engine.Interop.Plugin
             {
                 try
                 {
+                    logger.Info("Loading plugin " + pluginDll);
+
                     var assembly = Assembly.LoadFile(pluginDll);
                     var basePluginType = assembly.GetTypes().ToList().FirstOrDefault(x => x.IsSubclassOf(typeof(BasePlugin)));
                     if (basePluginType == null) continue;

@@ -19,7 +19,7 @@ namespace NodeBlock.Engine.Nodes.API
             this.OutParameters.Add("requestContext", new NodeParameter(this, "requestContext", typeof(RequestContext), false));
         }
 
-        public override bool CanBeExecuted => false;
+        public override bool CanBeExecuted => true;
 
         public override bool CanExecute => true;
 
@@ -35,6 +35,15 @@ namespace NodeBlock.Engine.Nodes.API
             var parameters = this.InstanciatedParametersForCycle();
             parameters["requestContext"].SetValue(requestContext);
             this.Graph.AddCycle(this, parameters, "api");
+        }
+
+        public override bool OnExecution()
+        {
+            var endpoint = this.InParameters["endpoint"].GetValue() as HostedEndpoint;
+            if (endpoint == null) return false;
+            endpoint.EventsNode = this;
+
+            return false;
         }
 
         public override void BeginCycle()

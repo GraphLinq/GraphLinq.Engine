@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NodeBlock.Engine.Nodes
 {
-    [NodeDefinition("PrintNode", "Print", NodeTypeEnum.Function, "Log")]
+    [NodeDefinition("PrintNode", "Print", NodeTypeEnum.Function, "Log", CustomIcon = "print")]
     [NodeGraphDescription("Display a message in the console logs")]
     [NodeGasConfiguration("10000000000000")]    public class PrintNode : Node
     {

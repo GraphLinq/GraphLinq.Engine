@@ -9,6 +9,8 @@ using System.Linq;
 using System.Collections.Generic;
 using NodeBlock.Engine.Storage.Redis;
 using NodeBlock.Engine.Storage;
+using Newtonsoft.Json;
+using Renci.SshNet.Compression;
 
 namespace NodeBlock.Engine.API.Controllers
 {
@@ -69,12 +71,23 @@ namespace NodeBlock.Engine.API.Controllers
         {
             try
             {
-                var compressed = GraphCompression.CompressGraphData(raw.JsonData);
-                return Ok(new
+                if(Environment.GetEnvironmentVariable("USE_SHA_JSON") == "true")
                 {
-                    compressed,
-                    hash = GraphCompression.GetUniqueGraphHash(raw.WalletIdentifier, compressed)
-                });
+                    var compressed = GraphCompression.CompressGraphData(raw.JsonData);
+                    return Ok(new
+                    {
+                        compressed,
+                        hash = GraphCompression.GetUniqueGraphHash(raw.WalletIdentifier, compressed)
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        compressed = raw.JsonData,
+                        hash = GraphCompression.GetUniqueGraphHash(raw.WalletIdentifier, raw.JsonData)
+                    }); ;
+                }
             }
             catch (Exception error)
             {

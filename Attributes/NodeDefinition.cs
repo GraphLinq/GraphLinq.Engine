@@ -20,5 +20,6 @@ namespace NodeBlock.Engine.Attributes
         public string NodeType { get; }
         public string GroupName { get; }
         public int BlockLimitPerGraph { get; }
+        public string CustomIcon { get; set; }
     }
 }

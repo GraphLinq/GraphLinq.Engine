@@ -36,3 +36,4 @@ msbuild.wrn
 obj/
 bin/
 .env
+.env.dist

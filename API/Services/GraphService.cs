@@ -24,7 +24,16 @@ namespace NodeBlock.Engine.API.Services
                 try
                 {
                     var hash = graph.UniqueHash ?? GraphCompression.GetUniqueGraphHash(graph.WalletIdentifier, graph.RawBytes);
-                    var decompressedRaw = GraphCompression.DecompressGraphData(graph.RawBytes);
+
+                    var decompressedRaw = string.Empty;
+                    if (Environment.GetEnvironmentVariable("USE_SHA_JSON") == "true")
+                    {
+                        decompressedRaw = GraphCompression.DecompressGraphData(graph.RawBytes);
+                    }
+                    else
+                    {
+                        decompressedRaw = graph.RawBytes;
+                    }
                     var loadedGraph = BlockGraph.LoadGraph(decompressedRaw, hash, graph.RawBytes);
                     loadedGraph.Debug = graph.Debug;
 

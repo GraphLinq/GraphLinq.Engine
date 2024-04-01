@@ -309,6 +309,7 @@ namespace NodeBlock.Engine
         {
             try
             {
+                logger.Info("Starting graph " + graph.UniqueHash + " ...");
                 // lock once to check if the graph is already loaded
                 lock (mutex)
                 {

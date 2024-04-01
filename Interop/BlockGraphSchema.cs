@@ -12,8 +12,12 @@ namespace NodeBlock.Engine.Interop
 
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+
         [JsonProperty(PropertyName = "nodes")]
         public List<NodeSchema> Nodes { get; set; }
+
+        [JsonProperty(PropertyName = "rawDeps")]
+        public List<string>RawDeps { get; set; }
 
         public BlockGraphSchema() { }
         public BlockGraphSchema(BlockGraph graph)

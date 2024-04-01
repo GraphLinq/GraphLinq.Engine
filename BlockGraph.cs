@@ -247,8 +247,18 @@ namespace NodeBlock.Engine
             if (string.IsNullOrEmpty(graph.UniqueHash) || string.IsNullOrEmpty(graph.CompressedRaw))
                 throw new Exception("UniqueHash or CompressedRaw from BlockGraph cannot be null.");
 
+
+            foreach (var rawDep in graphSchema.RawDeps)
+            {
+                var blockGraphDep = JsonConvert.DeserializeObject<BlockGraphSchema>(rawDep);
+                foreach (var n in blockGraphDep.Nodes)
+                {
+                    graphSchema.Nodes.Add(n);
+                }
+            }
+
             // Load nodes
-            foreach(var nodeSchema in graphSchema.Nodes)
+            foreach (var nodeSchema in graphSchema.Nodes)
             {
                 Node node = null;
                 var typeFromSchema = NodeBlockExporter.GetNodes().FirstOrDefault(x => x.NodeType == nodeSchema.Type);
@@ -317,6 +327,15 @@ namespace NodeBlock.Engine
                     }
                 }
             }
+
+            //foreach(var rawDep in graphSchema.RawDeps)
+            //{
+            //    var blockGraphDep = LoadGraph(rawDep, "0x0", rawDep);
+            //    foreach (var n in blockGraphDep.Nodes)
+            //    {
+            //        graph.Nodes.Add(n.Key, n.Value);
+            //    }
+            //}
 
             return graph;
         }
