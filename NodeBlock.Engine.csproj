@@ -42,7 +42,7 @@
    </ItemGroup>
   
    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows'">
-	   <Exec Condition=" '$(OS)' != 'Unix' " Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)\GraphLinq.CLI\bin\Debug\net6.0\plugins&quot;" />
+	   <Exec Condition=" '$(OS)' != 'Unix' " Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)\GraphLinq.CLI\bin\Debug\netcoreapp3.1\plugins&quot;" />
    </Target>
 
 </Project>
