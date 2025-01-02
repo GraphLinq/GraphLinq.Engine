@@ -26,6 +26,7 @@ namespace NodeBlock.Engine
         public string NodeBlockType { get; set; }
         public string NodeDescription { get; set; }
         public string CustomIcon { get; set; }
+        public bool IsCustomBlock = false;
         public Dictionary<string, NodeParameter> InParameters { get; set; }
         public Dictionary<string, NodeParameter> OutParameters { get; set; }
         public Node OutNode { get; set; }

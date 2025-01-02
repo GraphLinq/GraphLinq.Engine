@@ -18,7 +18,7 @@ namespace NodeBlock.Engine.HostedAPI
         {
             get
             {
-                return Environment.GetEnvironmentVariable("hosted_api_base_url") + "/hostedAPI/" + Graph.UniqueHash + "/web";
+                return Environment.GetEnvironmentVariable("hosted_api_base_url") + "/hostedAPI/id/" + Graph.UniqueHash + "/web";
             }
         }
     }

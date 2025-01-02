@@ -245,6 +245,15 @@ namespace NodeBlock.Engine
             return null;
         }
 
+        public static GraphContextWrapper GetRunningGraphByName(string name)
+        {
+            lock (mutex)
+            {
+                return _graphs.ToList().FirstOrDefault(x => x.Value.graph.Name == name).Value;
+            }
+            return null;
+        }
+
         public static GraphContextWrapper GetWalletDebugGraph(int walletId)
         {
             lock (mutex)
